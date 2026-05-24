@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Huiqi - Data Scientist. Portfolio showcasing data science, analytics, and machine learning work." />
+  <title>Huiqi - Data Scientist</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- Custom cursor -->
+  <div id="cursor"></div>
+  <div id="cursor-ring"></div>
+
+  <!-- ── Sidebar ── -->
+  <div id="sidebar">
+    <a href="#hero" class="sidebar-logo">Huiqi</a>
+    <nav class="nav-dots" id="nav-dots">
+      <button class="nav-dot active" data-section="hero"     data-label="Home"     onclick="scrollTo('hero')"></button>
+      <button class="nav-dot"        data-section="about"    data-label="About"    onclick="scrollTo('about')"></button>
+      <button class="nav-dot"        data-section="projects" data-label="Projects" onclick="scrollTo('projects')"></button>
+      <button class="nav-dot"        data-section="skills"   data-label="Skills"   onclick="scrollTo('skills')"></button>
+      <button class="nav-dot"        data-section="contact"  data-label="Contact"  onclick="scrollTo('contact')"></button>
+    </nav>
+    <div class="sidebar-line"></div>
+  </div>
+
+  <!-- ── Page content ── -->
+  <div class="page-wrap">
+
+    <!-- HERO -->
+    <section id="hero">
+      <div class="blob" style="width:500px;height:500px;top:-100px;right:-80px;opacity:0.3;"></div>
+      <div class="hero-inner">
+        <p class="hero-eyebrow">Data Scientist · UNSW · Singapore</p>
+        <h1 class="hero-name">Hi, I'm<br /><em>Hui Qi</em></h1>
+        <p class="hero-tagline">
+          I turn complex, messy data into clear and meaningful insights —
+          through analysis, modeling, and visualization.
+        </p>
+        <div class="hero-ctas">
+          <a href="#projects" class="btn-primary">View my work</a>
+          <a href="#contact"  class="btn-outline">Get in touch</a>
+        </div>
+        <div class="scroll-hint">
+          <div class="scroll-line"></div>
+          <span>scroll</span>
+        </div>
+      </div>
+      <div class="hero-deco">data</div>
+    </section>
+
+    <!-- ABOUT -->
+    <section id="about">
+      <div class="blob" style="width:380px;height:380px;bottom:-80px;left:-60px;opacity:0.35;"></div>
+      <div class="section-inner">
+        <p class="section-label reveal">About me</p>
+        <div class="about-grid">
+          <div class="about-photo-area reveal">
+            <div class="photo-frame"></div>
+            <div class="photo-placeholder"><span>your photo here</span></div>
+            <p class="photo-label">Hui Qi · Data Scientist</p>
+          </div>
+          <div class="about-text">
+            <h2 class="reveal">Where <em>data</em> meets<br />curiosity</h2>
+            <p class="reveal">
+              I'm a data science graduate from UNSW Sydney, currently seeking roles in
+              Singapore. I love the process of going from raw, messy datasets to something
+              that actually tells a story and drives decisions.
+            </p>
+            <p class="reveal">
+              My work spans machine learning, exploratory analysis, and visual storytelling —
+              I care equally about getting the model right and making the results understood.
+            </p>
+            <div class="tag-row reveal">
+              <span class="tag">Python</span>
+              <span class="tag">SQL</span>
+              <span class="tag">Scikit-learn</span>
+              <span class="tag">Tableau</span>
+              <span class="tag">R</span>
+              <span class="tag">Git</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROJECTS -->
+    <section id="projects">
+      <div class="section-inner">
+        <p class="section-label reveal">Selected work</p>
+        <h2 class="reveal">Projects</h2>
+        <p class="sub reveal">End-to-end data projects - from messy raw data to actionable insights.</p>
+
+        <div class="projects-grid">
+
+          <!-- 01 - Featured: F1 -->
+          <div class="project-card featured reveal"
+               onclick="window.location='f1-case-study.html'"
+               role="button" tabindex="0"
+               onkeydown="if(event.key==='Enter') window.location='f1-case-study.html'">
+            <div>
+              <p class="project-num">01 - Featured</p>
+              <h3 class="project-title">F1 Chicane Performance Optimization</h3>
+              <p class="project-context">ML Regression · Telemetry Analysis · Differential Evolution</p>
+              <p class="project-desc">
+                Applied machine learning to Formula 1 simulator telemetry to identify the optimal
+                combination of braking, steering, and throttle inputs through the Turns 1–2 chicane
+                at Albert Park. SVR achieved 92% explained variance, enabling precise, data-driven
+                driver coaching recommendations.
+              </p>
+              <div class="project-tools">
+                <span class="project-tool">Python</span>
+                <span class="project-tool">SVR</span>
+                <span class="project-tool">XGBoost</span>
+                <span class="project-tool">LightGBM</span>
+                <span class="project-tool">SciPy</span>
+                <span class="project-tool">Pandas</span>
+              </div>
+            </div>
+            <div>
+              <div style="font-family:var(--serif);font-style:italic;font-size:5rem;color:rgba(232,180,184,0.08);line-height:1;margin-bottom:1rem;">F1</div>
+              <!-- Mini stat strip -->
+              <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.5px;margin-bottom:1.5rem;">
+                <div style="background:rgba(255,255,255,0.04);padding:1.2rem;text-align:center;">
+                  <div style="font-family:var(--serif);font-size:1.8rem;color:var(--rose-light);line-height:1;margin-bottom:0.4rem;">92%</div>
+                  <div style="font-family:var(--mono);font-size:0.6rem;letter-spacing:0.12em;color:var(--warm-gray-light);text-transform:uppercase;">R² (SVR)</div>
+                </div>
+                <div style="background:rgba(255,255,255,0.04);padding:1.2rem;text-align:center;">
+                  <div style="font-family:var(--serif);font-size:1.8rem;color:var(--rose-light);line-height:1;margin-bottom:0.4rem;">7</div>
+                  <div style="font-family:var(--mono);font-size:0.6rem;letter-spacing:0.12em;color:var(--warm-gray-light);text-transform:uppercase;">Models</div>
+                </div>
+                <div style="background:rgba(255,255,255,0.04);padding:1.2rem;text-align:center;">
+                  <div style="font-family:var(--serif);font-size:1.6rem;color:var(--rose-light);line-height:1;margin-bottom:0.4rem;">11.27s</div>
+                  <div style="font-family:var(--mono);font-size:0.6rem;letter-spacing:0.12em;color:var(--warm-gray-light);text-transform:uppercase;">Target time</div>
+                </div>
+              </div>
+              <div style="display:flex;gap:0.8rem;">
+                <a href="https://github.com/saaamsaaa/F1-Modelling-Group"
+                   target="_blank" rel="noopener noreferrer"
+                   class="project-link"
+                   onclick="event.stopPropagation()">GitHub ↗</a>
+                <a href="f1-case-study.html"
+                   class="project-link"
+                   onclick="event.stopPropagation()">Full case study ↗</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- 02 - Kindergarten -->
+          <div class="project-card reveal"
+               onclick="window.location='kinder-case-study.html'"
+               role="button" tabindex="0"
+               onkeydown="if(event.key==='Enter') window.location='kinder-case-study.html'">
+            <p class="project-num">02</p>
+            <h3 class="project-title">Kindergarten Achievement Analysis</h3>
+            <p class="project-context">ML Regression · SHAP · Project STAR · Education Policy</p>
+            <p class="project-desc">
+              Predicted kindergarten reading and math scores using LightGBM and XGBoost on the
+              Project STAR dataset. Identified SES, teacher experience, and class size as key
+              drivers via SHAP. Achieved MSEₒ ~990 on held-out test data.
+            </p>
+            <div class="project-tools">
+              <span class="project-tool">Python</span>
+              <span class="project-tool">XGBoost</span>
+              <span class="project-tool">LightGBM</span>
+              <span class="project-tool">SHAP</span>
+            </div>
+            <div class="project-arrow">↗</div>
+          </div>
+
+          <!-- 03 - Customer Feedback Classification -->
+          <div class="project-card reveal"
+               onclick="window.location='customer-case-study.html'"
+               role="button" tabindex="0"
+               onkeydown="if(event.key==='Enter') window.location='customer-case-study.html'">
+            <p class="project-num">03</p>
+            <h3 class="project-title">Customer Feedback Classification</h3>
+            <p class="project-context">NLP · Multiclass · Stacking · Distribution Shift</p>
+            <p class="project-desc">
+              Built a stacked ensemble classifier to route 10,000 NLP-encoded customer comments
+              across 28 product departments. Addressed severe class imbalance and real-world
+              distribution shift, achieving a weighted log loss of 0.0043 — best across 9 models tested.
+            </p>
+            <div class="project-tools">
+              <span class="project-tool">Python</span>
+              <span class="project-tool">XGBoost</span>
+              <span class="project-tool">LightGBM</span>
+              <span class="project-tool">Scikit-learn</span>
+            </div>
+            <div class="project-arrow">↗</div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- SKILLS -->
+    <section id="skills">
+      <div class="section-inner">
+        <div class="skills-layout">
+          <div class="skills-sticky">
+            <p class="section-label reveal">Toolkit</p>
+            <h2 class="reveal">What I<br />work<br /><em>with</em></h2>
+            <p class="reveal" style="margin-top:1.2rem;">Tools I'm comfortable using and actively applying across projects.</p>
+          </div>
+          <div class="skills-groups">
+            <div class="reveal">
+              <p class="skill-group-title">Languages</p>
+              <div class="skill-items">
+                <span class="skill-item">Python</span>
+                <span class="skill-item">SQL</span>
+                <span class="skill-item">R</span>
+                <span class="skill-item">JavaScript</span>
+              </div>
+            </div>
+            <div class="reveal">
+              <p class="skill-group-title">Data & ML</p>
+              <div class="skill-items">
+                <span class="skill-item">Pandas</span>
+                <span class="skill-item">NumPy</span>
+                <span class="skill-item">Scikit-learn</span>
+                <span class="skill-item">SciPy</span>
+                <span class="skill-item">SHAP</span>
+                <span class="skill-item">Shapely</span>
+                <span class="skill-item">Feature Engineering</span>
+                <span class="skill-item">Model Evaluation</span>
+              </div>
+            </div>
+            <div class="reveal">
+              <p class="skill-group-title">Visualization</p>
+              <div class="skill-items">
+                <span class="skill-item">Matplotlib</span>
+                <span class="skill-item">Tableau</span>
+                <span class="skill-item">Dashboards</span>
+                <span class="skill-item">Storytelling</span>
+              </div>
+            </div>
+            <div class="reveal">
+              <p class="skill-group-title">Tools & Platforms</p>
+              <div class="skill-items">
+                <span class="skill-item">Git / GitHub</span>
+                <span class="skill-item">PostgreSQL</span>
+                <span class="skill-item">AWS / GCP</span>
+                <span class="skill-item">Jupyter</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact">
+      <div class="contact-deco">hello</div>
+      <div class="section-inner">
+        <p class="section-label reveal" style="justify-content:center;">Let's connect</p>
+        <h2 class="reveal">Let's work<br /><em>together</em></h2>
+        <p class="reveal">
+          I'm actively looking for data science roles and internships in Singapore.
+          If you have an opportunity or just want to chat — reach out.
+        </p>
+        <div class="contact-links reveal">
+          <a href="mailto:huiqi@email.com" class="btn-primary">Email me</a>
+          <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="btn-outline">LinkedIn</a>
+          <a href="https://github.com"    target="_blank" rel="noopener noreferrer" class="btn-outline">GitHub</a>
+        </div>
+        <p class="footer-line reveal">© 2026 · Huiqi · Built with care</p>
+      </div>
+    </section>
+
+  </div><!-- /page-wrap -->
+
+  <script src="shared.js"></script>
+  <script>
+    /* ── Smooth-scroll helper ── */
+    function scrollTo(id) {
+      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    /* ── Active nav dot on scroll ── */
+    const dots = document.querySelectorAll('.nav-dot');
+    const sectionIds = ['hero', 'about', 'projects', 'skills', 'contact'];
+
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          dots.forEach(d => d.classList.remove('active'));
+          const dot = document.querySelector(`.nav-dot[data-section="${e.target.id}"]`);
+          if (dot) dot.classList.add('active');
+        }
+      });
+    }, { threshold: 0.4 });
+
+    sectionIds.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) io.observe(el);
+    });
+  </script>
+
+</body>
+</html>

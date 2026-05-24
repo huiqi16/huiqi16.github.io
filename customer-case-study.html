@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Customer Feedback Classification — Huiqi's Data Science Case Study" />
+  <title>Customer Feedback Classification — Huiqi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* ── Accent overrides — deep teal/slate for this page ── */
+    :root {
+      --pg-accent:      #3d7a6e;
+      --pg-accent-light:#7bbcb0;
+      --pg-accent-pale: #e4f2ef;
+      --pg-accent-dark: #1e4a43;
+      --pg-bg:          #18252a;
+    }
+
+    .cs-header          { background: var(--pg-bg); }
+    .cs-eyebrow         { color: var(--pg-accent-light); }
+    .cs-title           { color: #eef4f3; }
+    .cs-subtitle        { color: #7aaaa2; }
+    .cs-meta-row        { border-top-color: rgba(255,255,255,0.07); }
+    .cs-meta-label      { color: #7aaaa2; }
+    .cs-meta-value      { color: #eef4f3; }
+    .cs-header-deco     { color: rgba(255,255,255,0.025); }
+    .back-btn           { color: #7aaaa2; }
+    .back-btn:hover     { color: var(--pg-accent-light); }
+
+    .cs-section-label         { color: var(--pg-accent); }
+    .cs-section-label::before { background: var(--pg-accent-light); }
+
+    .highlight-box            { background: var(--pg-bg); }
+    .highlight-box::before    { background: var(--pg-accent); }
+    .highlight-box strong     { color: var(--pg-accent-light) !important; }
+
+    .stat-num   { color: var(--pg-accent-dark); }
+    .bar-fill   { background: linear-gradient(90deg, var(--pg-accent-light), var(--pg-accent-dark)); }
+    .bar-label  { width: 170px; }
+
+    .model-table tr.winner td          { background: rgba(61,122,110,0.09); }
+    .model-table tr.winner .model-name { color: var(--pg-accent-dark); }
+    .model-badge                       { background: var(--pg-accent-dark); }
+
+    .finding-card  { background: var(--pg-bg); }
+    .finding-num   { color: rgba(61,122,110,0.22); }
+
+    .cs-footer     { background: var(--pg-bg); }
+
+    #sidebar            { background: var(--pg-bg); border-color: rgba(255,255,255,0.05); }
+    .sidebar-logo       { color: var(--pg-accent-light); }
+    .sidebar-line       { background: linear-gradient(to bottom, rgba(255,255,255,0.1), transparent); }
+    .nav-dot.active     { background: var(--pg-accent); }
+    .nav-dot:hover      { background: var(--pg-accent-light); }
+
+    /* ── Class distribution chart ── */
+    .class-dist { margin: 2rem 0; }
+    .class-row  { display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.65rem; }
+    .class-lbl  { font-family: var(--mono); font-size: 0.62rem; color: var(--warm-gray); width: 56px; flex-shrink: 0; text-align: right; }
+    .class-track{ flex: 1; height: 7px; background: var(--cream-dark); border-radius: 3px; overflow: hidden; position: relative; }
+    .class-fill { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 3px; width: 0; transition: width 1.1s cubic-bezier(.4,0,.2,1); }
+    .class-fill.dominant { background: linear-gradient(90deg, var(--pg-accent-light), var(--pg-accent-dark)); }
+    .class-fill.mid      { background: linear-gradient(90deg, #aac8c4, #3d7a6e); opacity: .7; }
+    .class-fill.rare     { background: linear-gradient(90deg, #cce0dd, #7bbcb0); opacity: .45; }
+    .class-val  { font-family: var(--mono); font-size: 0.62rem; color: var(--charcoal); width: 44px; flex-shrink: 0; text-align: right; }
+
+    /* ── Shift comparison ── */
+    .shift-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.5px; margin: 2rem 0; }
+    .shift-card { background: var(--cream-dark); padding: 1.6rem; }
+    .shift-card.problem { background: #fff3f0; border-left: 3px solid #d97070; }
+    .shift-card.good    { background: #f0f7f4; border-left: 3px solid var(--pg-accent); }
+    .shift-title { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--warm-gray); margin-bottom: 0.6rem; }
+    .shift-val   { font-family: var(--serif); font-size: 1.6rem; line-height: 1; color: var(--charcoal); margin-bottom: 0.3rem; }
+    .shift-desc  { font-size: 0.78rem; color: var(--warm-gray); line-height: 1.65; margin: 0; }
+
+    /* ── Ensemble diagram ── */
+    .ensemble-viz { background: var(--pg-bg); border-radius: 6px; padding: 2.5rem; margin: 2.5rem 0; }
+    .ensemble-viz-label { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.18em; color: rgba(255,255,255,0.3); text-transform: uppercase; margin-bottom: 1.5rem; }
+    .ens-row { display: flex; align-items: center; justify-content: center; gap: 1rem; flex-wrap: wrap; }
+    .ens-box { background: rgba(255,255,255,0.06); border: 1px solid rgba(123,188,176,0.2); border-radius: 4px; padding: 1rem 1.5rem; text-align: center; min-width: 100px; }
+    .ens-box.meta { background: rgba(61,122,110,0.25); border-color: var(--pg-accent); }
+    .ens-name { font-family: var(--mono); font-size: 0.65rem; color: var(--pg-accent-light); letter-spacing: 0.1em; }
+    .ens-wll  { font-family: var(--serif); font-size: 1.1rem; color: #eef4f3; margin-top: 0.3rem; }
+    .ens-arrow { color: rgba(255,255,255,0.25); font-size: 1.2rem; }
+
+    /* ── Pipeline pills ── */
+    .pipeline { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 1.5rem 0; }
+    .pipe-step { display: flex; align-items: center; gap: 0.4rem; }
+    .pipe-pill { background: var(--cream-dark); border-radius: 20px; padding: 0.25rem 0.9rem; font-family: var(--mono); font-size: 0.62rem; color: var(--charcoal); letter-spacing: 0.06em; }
+    .pipe-arrow { color: var(--pg-accent); font-size: 0.7rem; }
+
+    /* ── Findings grid 2×3 ── */
+    .findings-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5px; margin: 2rem 0; }
+
+    /* ── Distribution viz ── */
+    .dist-compare { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin: 2rem 0; }
+    .dist-panel { }
+    .dist-title { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.15em; color: var(--pg-accent); text-transform: uppercase; margin-bottom: 1rem; }
+
+    @media (max-width: 768px) {
+      .shift-grid, .findings-2col, .dist-compare { grid-template-columns: 1fr; }
+      .ens-row { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="cursor"></div>
+  <div id="cursor-ring"></div>
+
+  <div id="sidebar" class="dark">
+    <a href="index.html" class="sidebar-logo">Huiqi</a>
+    <div class="sidebar-line"></div>
+  </div>
+
+  <div class="cs-wrap">
+
+    <!-- HEADER -->
+    <header class="cs-header">
+      <div class="cs-header-deco">NLP</div>
+      <div class="cs-header-inner">
+        <a href="index.html" class="back-btn">Back to portfolio</a>
+        <p class="cs-eyebrow">Case Study · 03</p>
+        <h1 class="cs-title">Customer Feedback Classification</h1>
+        <p class="cs-subtitle">
+          Building a robust multiclass NLP classifier to route 10,000 customer comments
+          across 28 product departments — under severe class imbalance and real-world
+          distribution shift.
+        </p>
+        <div class="cs-meta-row">
+          <div><p class="cs-meta-label">Context</p>    <p class="cs-meta-value">Academic · Group Project (COMP9417)</p></div>
+          <div><p class="cs-meta-label">Role</p>       <p class="cs-meta-value">EDA, Feature Selection &amp; Model Stacking</p></div>
+          <div><p class="cs-meta-label">Stack</p>      <p class="cs-meta-value">Python · Scikit-learn · XGBoost · LightGBM</p></div>
+          <div><p class="cs-meta-label">Dataset</p>    <p class="cs-meta-value">10,000 NLP-encoded comments · 300 features · 28 classes</p></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="cs-body">
+
+      <!-- 01 PROBLEM -->
+      <section class="cs-section">
+        <p class="cs-section-label">01 — Business Problem</p>
+        <h2>Routing customer feedback <em>at scale</em></h2>
+        <p>
+          A manufacturing company receives thousands of customer comments daily across 28 product lines.
+          Manually triaging each comment to the right department is slow and error-prone. The task:
+          train a model to automatically classify each comment and route it to the correct team,
+          minimising misrouted feedback and wasted response time.
+        </p>
+        <p>
+          
+          Each comment had been encoded into a 300-dimensional NLP feature vector — but with
+          no feature names or semantic labels attached, making domain interpretation impossible.
+          Two additional challenges made this harder than a standard classification task:
+          <strong>severe class imbalance</strong> (one class holding 45% of all samples) and
+          <strong>distribution shift</strong> between the training set and a second deployment test set.
+        </p>
+        <div class="highlight-box">
+          <p>
+            <strong>Evaluation metric:</strong> Weighted cross-entropy loss — where rare classes
+            receive higher weight via inverse frequency. This explicitly penalises ignoring minority
+            classes, making standard accuracy a misleading proxy throughout.
+          </p>
+        </div>
+        <div class="stats-row">
+          <div class="stat-card"><div class="stat-num" style="font-size:2rem;">10,000</div><div class="stat-label">Training samples</div></div>
+          <div class="stat-card"><div class="stat-num" style="font-size:2rem;">28</div><div class="stat-label">Target classes</div></div>
+          <div class="stat-card"><div class="stat-num" style="font-size:2rem;">300</div><div class="stat-label">NLP features</div></div>
+        </div>
+      </section>
+
+      <!-- 02 EDA -->
+      <section class="cs-section">
+        <p class="cs-section-label">02 — Exploratory Data Analysis</p>
+        <h2>Understanding the data <em>before touching a model</em></h2>
+
+        <p>
+          With 300 anonymous NLP features and no domain labels, EDA had to do the heavy lifting.
+          Three distinct analyses shaped the modelling strategy.
+        </p>
+
+        <h2 style="margin-top:2.5rem;">Class imbalance — <em>the defining challenge</em></h2>
+        <p>
+          The class distribution is dramatically skewed. Class 5 alone accounts for nearly
+          half the training data, while several classes have fewer than 10 samples. This makes
+          accuracy a near-useless metric — a model predicting class 5 every time would still
+          achieve ~45% accuracy. Weighted log loss was used instead to force genuine minority
+          class performance.
+        </p>
+
+        <!-- Class distribution chart -->
+        <div class="class-dist" id="class-chart">
+          <div class="class-row"><div class="class-lbl">Class 5</div><div class="class-track"><div class="class-fill dominant" data-w="100"></div></div><div class="class-val">4,479</div></div>
+          <div class="class-row"><div class="class-lbl">Class 10</div><div class="class-track"><div class="class-fill mid" data-w="24"></div></div><div class="class-val">1,081</div></div>
+          <div class="class-row"><div class="class-lbl">Class 6</div><div class="class-track"><div class="class-fill mid" data-w="12"></div></div><div class="class-val">553</div></div>
+          <div class="class-row"><div class="class-lbl">Class 8</div><div class="class-track"><div class="class-fill mid" data-w="12"></div></div><div class="class-val">516</div></div>
+          <div class="class-row"><div class="class-lbl">Class 12</div><div class="class-track"><div class="class-fill mid" data-w="10"></div></div><div class="class-val">457</div></div>
+          <div class="class-row"><div class="class-lbl">Class 24</div><div class="class-track"><div class="class-fill mid" data-w="9"></div></div><div class="class-val">385</div></div>
+          <div class="class-row"><div class="class-lbl">Class 17</div><div class="class-track"><div class="class-fill rare" data-w="8"></div></div><div class="class-val">354</div></div>
+          <div class="class-row"><div class="class-lbl">Class 15</div><div class="class-track"><div class="class-fill rare" data-w="1"></div></div><div class="class-val">26</div></div>
+          <div class="class-row"><div class="class-lbl">Class 0</div><div class="class-track"><div class="class-fill rare" data-w="0.4"></div></div><div class="class-val">18</div></div>
+          <div class="class-row"><div class="class-lbl">Class 2</div><div class="class-track"><div class="class-fill rare" data-w="0.2"></div></div><div class="class-val">7</div></div>
+        </div>
+
+        <h2 style="margin-top:2.5rem;">Feature quality — <em>mostly clean, but skewed</em></h2>
+        <p>
+          Feature means clustered near zero — confirming pre-standardized NLP embeddings.
+          Standard deviations were uniformly narrow, suggesting many features may be
+          low-signal. Outlier detection via Z-score (|z| > 3) flagged fewer than 0.4% of
+          rows across all features — too sparse to warrant removal. The top 20 most skewed
+          features showed right-skew values between 1.2 and 4.5, consistent with rare NLP
+          pattern activations. Tree-based models were chosen partly because they handle
+          skewed features without transformation.
+        </p>
+        <p>
+          Pairwise Pearson correlation analysis of all 300 features found no pair exceeding
+          r = 0.69 — well below the 0.95 threshold typically used for redundancy removal.
+          All features were retained for feature selection to decide.
+        </p>
+
+        <h2 style="margin-top:2.5rem;">Distribution shift — <em>Test Set 2 is different</em></h2>
+        <p>
+          Comparing feature-level statistics across the training set, Test Set 1, and Test Set 2
+          revealed a clear pattern: feature means, standard deviations, and value ranges
+          diverged substantially in Test Set 2 relative to training. This is a textbook
+          <strong>covariate shift</strong> — the input distribution P(x) has changed, while
+          the underlying class-conditional P(y|x) may still hold.
+        </p>
+        <div class="shift-grid">
+          <div class="shift-card problem">
+            <p class="shift-title">Covariate shift observed</p>
+            <p class="shift-val">Test 2</p>
+            <p class="shift-desc">Feature means and standard deviations diverge from training. A model trained naively will underperform on this set.</p>
+          </div>
+          <div class="shift-card good">
+            <p class="shift-title">Labeled anchor points</p>
+            <p class="shift-val">202</p>
+            <p class="shift-desc">Test Set 2 includes 202 labeled samples that can be used to recalibrate, fine-tune, or validate adapted models.</p>
+          </div>
+          <div class="shift-card">
+            <p class="shift-title">Mitigation strategies</p>
+            <p class="shift-val">3+</p>
+            <p class="shift-desc">Domain adaptation, feature reweighting, and ensemble regularisation were all explored to improve generalization.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 03 FEATURE SELECTION -->
+      <section class="cs-section">
+        <p class="cs-section-label">03 — Feature Selection</p>
+        <h2>From 300 features to <em>105 that matter</em></h2>
+        <p>
+          With 300 anonymous features and no semantic guide, feature selection required
+          empirical ranking. Three methods were run in parallel — permutation importance
+          with Random Forest, permutation importance with Logistic Regression, and XGBoost
+          native feature importance — each producing a top-50 ranking. The union of all three
+          sets gave 105 features for the final models.
+        </p>
+
+        <div class="pipeline">
+          <div class="pipe-step"><div class="pipe-pill">Random Forest</div><div class="pipe-arrow">→</div></div>
+          <div class="pipe-step"><div class="pipe-pill">Permutation Importance</div><div class="pipe-arrow">→</div></div>
+          <div class="pipe-step"><div class="pipe-pill">Top 50 Features</div></div>
+        </div>
+        <div class="pipeline">
+          <div class="pipe-step"><div class="pipe-pill">Logistic Regression</div><div class="pipe-arrow">→</div></div>
+          <div class="pipe-step"><div class="pipe-pill">Permutation Importance</div><div class="pipe-arrow">→</div></div>
+          <div class="pipe-step"><div class="pipe-pill">Top 50 Features</div></div>
+        </div>
+        <div class="pipeline">
+          <div class="pipe-step"><div class="pipe-pill">XGBoost</div><div class="pipe-arrow">→</div></div>
+          <div class="pipe-step"><div class="pipe-pill">Feature Importances</div><div class="pipe-arrow">→</div></div>
+          <div class="pipe-step"><div class="pipe-pill">Top 50 Features</div><div class="pipe-arrow" style="color:var(--pg-accent);font-weight:600;">→ UNION → 105 features</div></div>
+        </div>
+
+        <p>
+          Permutation importance was chosen as the primary method because it directly measures
+          the change in weighted log loss when each feature is randomly shuffled — aligning
+          the selection criterion with the exact evaluation metric. It is also model-agnostic
+          and robust to the skewed distributions and scale differences present in this dataset.
+        </p>
+
+        <!-- Feature importance chart -->
+        <p style="font-family:var(--mono);font-size:0.65rem;letter-spacing:0.15em;color:var(--pg-accent);text-transform:uppercase;margin:2rem 0 0.8rem;">Top features by permutation importance (Random Forest ranking)</p>
+        <div class="bar-chart" id="feat-chart">
+          <div class="bar-row"><div class="bar-label">Feature 17</div><div class="bar-track"><div class="bar-fill" data-w="100"></div></div><div class="bar-val">0.00028</div></div>
+          <div class="bar-row"><div class="bar-label">Feature 90</div><div class="bar-track"><div class="bar-fill" data-w="82"></div></div><div class="bar-val">0.00023</div></div>
+          <div class="bar-row"><div class="bar-label">Feature 79</div><div class="bar-track"><div class="bar-fill" data-w="71"></div></div><div class="bar-val">0.00020</div></div>
+          <div class="bar-row"><div class="bar-label">Feature 270</div><div class="bar-track"><div class="bar-fill" data-w="71"></div></div><div class="bar-val">0.00020</div></div>
+          <div class="bar-row"><div class="bar-label">Feature 55</div><div class="bar-track"><div class="bar-fill" data-w="50"></div></div><div class="bar-val">0.00014</div></div>
+          <div class="bar-row"><div class="bar-label">Feature 218</div><div class="bar-track"><div class="bar-fill" data-w="50"></div></div><div class="bar-val">0.00014</div></div>
+          <div class="bar-row"><div class="bar-label">Feature 265</div><div class="bar-track"><div class="bar-fill" data-w="50"></div></div><div class="bar-val">0.00014</div></div>
+          <div class="bar-row"><div class="bar-label">Feature 249</div><div class="bar-track"><div class="bar-fill" data-w="46"></div></div><div class="bar-val">0.00013</div></div>
+        </div>
+
+        <div class="highlight-box">
+          <p>
+            <strong>Key insight:</strong> Weighted log loss dropped dramatically between k=1 and k=50
+            features, then plateaued — confirming that a compact feature set captures most signal.
+            Final selection of k=21 (Logistic Regression) and k=25 (Random Forest-ranked) provided
+            the best train/test loss balance, with minimal overfitting.
+          </p>
+        </div>
+      </section>
+
+      <!-- 04 MODELLING -->
+      <section class="cs-section">
+        <p class="cs-section-label">04 — Modelling</p>
+        <h2>Nine models. <em>One stacked winner.</em></h2>
+        <p>
+          A wide model search was conducted across the selected feature sets. All models used
+          80/20 stratified splits to preserve class proportions. <code style="font-family:var(--mono);font-size:0.85em;background:var(--cream-dark);padding:0.1rem 0.4rem;border-radius:2px;">class_weight='balanced'</code>
+          was applied throughout to counteract the dominant Class 5 effect.
+        </p>
+
+        <table class="model-table">
+          <thead>
+            <tr><th>Model</th><th>WLL (Train)</th><th>WLL (Test)</th><th>Notes</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="model-name">LightGBM (early stopping)</td><td>≈0.000</td><td>0.0194</td><td style="font-size:0.8rem;color:var(--warm-gray);">Severe overfit</td></tr>
+            <tr><td class="model-name">Random Forest (top 150)</td><td>0.0013</td><td>0.0153</td><td style="font-size:0.8rem;color:var(--warm-gray);">Overfit — large train/test gap</td></tr>
+            <tr><td class="model-name">XGBoost (union features)</td><td>0.0002</td><td>0.0078</td><td style="font-size:0.8rem;color:var(--warm-gray);">Strong but overfit</td></tr>
+            <tr><td class="model-name">Calibrated SVM</td><td>0.0046</td><td>0.0071</td><td style="font-size:0.8rem;color:var(--warm-gray);">Good generalization</td></tr>
+            <tr><td class="model-name">Voting Classifier (LR+RF+XGB)</td><td>0.0007</td><td>0.0059</td><td style="font-size:0.8rem;color:var(--warm-gray);">Ensemble benefit</td></tr>
+            <tr><td class="model-name">Logistic Regression (top 21)</td><td>0.0052</td><td>0.0058</td><td style="font-size:0.8rem;color:var(--warm-gray);">Most balanced single model</td></tr>
+            <tr class="winner">
+              <td class="model-name">Stacked Model (LR + RF + XGB) <span class="model-badge">Selected</span></td>
+              <td><strong>0.0037</strong></td>
+              <td><strong>0.0043</strong></td>
+              <td style="font-size:0.8rem;color:var(--pg-accent-dark);">Best train/test balance</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Ensemble diagram -->
+        <div class="ensemble-viz">
+          <p class="ensemble-viz-label">Stacking architecture</p>
+          <div class="ens-row">
+            <div class="ens-box">
+              <div class="ens-name">Logistic Regression</div>
+              <div class="ens-wll">0.0052</div>
+            </div>
+            <div class="ens-box">
+              <div class="ens-name">Random Forest</div>
+              <div class="ens-wll">0.0013</div>
+            </div>
+            <div class="ens-box">
+              <div class="ens-name">XGBoost</div>
+              <div class="ens-wll">0.0002</div>
+            </div>
+            <div class="ens-arrow">→</div>
+            <div class="ens-box meta">
+              <div class="ens-name">Meta Learner (LR)</div>
+              <div class="ens-wll">0.0043 ✓</div>
+            </div>
+          </div>
+          <p style="font-family:var(--mono);font-size:0.62rem;color:rgba(255,255,255,0.3);text-align:center;margin-top:1.5rem;">Base model probabilities are stacked horizontally → meta-learner predicts final class</p>
+        </div>
+
+        <p>
+          The stacking architecture trains a meta-learner (Logistic Regression) on the
+          concatenated probability outputs of three base models. The meta-learner learns
+          how much to trust each base model per class — effectively combining their
+          complementary strengths. This reduced the test weighted log loss to 0.0043, the
+          best achieved across all experiments, with a minimal train/test gap indicating
+          strong generalization.
+        </p>
+      </section>
+
+      <!-- 05 IMBALANCE -->
+      <section class="cs-section">
+        <p class="cs-section-label">05 — Handling Class Imbalance</p>
+        <h2>Why accuracy <em>is the wrong metric</em></h2>
+        <p>
+          The dataset's dominant Class 5 (4,479 of 10,000 samples) creates a deceptive
+          accuracy landscape — a naive majority-class predictor achieves ~45% accuracy.
+          Three strategies were applied to address this throughout the pipeline.
+        </p>
+        <div class="findings-2col">
+          <div class="finding-card">
+            <div class="finding-num">01</div>
+            <p class="finding-title">Weighted loss metric</p>
+            <p class="finding-desc">The evaluation metric itself applies inverse-frequency class weights — rare classes receive proportionally higher penalty when misclassified. This forced all model choices to account for minority class performance, not just dominant class accuracy.</p>
+          </div>
+          <div class="finding-card">
+            <div class="finding-num">02</div>
+            <p class="finding-title">class_weight='balanced'</p>
+            <p class="finding-desc">Applied uniformly to all sklearn models. This adjusts sample weights during training so each class contributes equally to the loss update — preventing the model from collapsing to always predict Class 5.</p>
+          </div>
+          <div class="finding-card">
+            <div class="finding-num">03</div>
+            <p class="finding-title">Stratified splitting</p>
+            <p class="finding-desc">All train/test splits used stratified sampling. With classes as rare as 7 samples, non-stratified splits risked excluding entire classes from training or evaluation sets — making stratification critical rather than optional.</p>
+          </div>
+          <div class="finding-card">
+            <div class="finding-num">04</div>
+            <p class="finding-title">Per-class F1 monitoring</p>
+            <p class="finding-desc">Final model evaluation used per-class precision, recall, and F1 to surface minority class failures that aggregate scores hide. Classes with F1 = 0.00 (e.g., Class 0, 1, 2) revealed where even the best model struggled.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 06 DISTRIBUTION SHIFT -->
+      <section class="cs-section">
+        <p class="cs-section-label">06 — Distribution Shift (Test Set 2)</p>
+        <h2>Deploying to a <em>different distribution</em></h2>
+        <p>
+          Test Set 2 presented a simulated real-world deployment scenario: 202 labeled points
+          and 1,818 unlabeled points, with feature statistics that diverged measurably from
+          training. This is covariate shift — the feature distribution P(x) changes, but
+          the class-conditional relationship P(y|x) may still hold.
+        </p>
+        <div class="dist-compare">
+          <div class="dist-panel">
+            <p class="dist-title">What the shift looks like</p>
+            <p>Feature-level mean, standard deviation, and min/max ranges all showed visible divergence in Test Set 2 versus the training set. Test Set 1 tracked training closely, while Test Set 2 showed systematic differences across hundreds of features simultaneously.</p>
+          </div>
+          <div class="dist-panel">
+            <p class="dist-title">Mitigation strategies explored</p>
+            <p>The 202 labeled Test Set 2 samples were used to validate adapted models. Ensemble regularisation and lower-complexity models (Logistic Regression) showed better cross-distribution stability than high-capacity tree models that overfit training-specific patterns.</p>
+          </div>
+        </div>
+        <div class="highlight-box">
+          <p>
+            <strong>Key finding:</strong> The stacked model's generalization advantage was
+            amplified under distribution shift — the meta-learner's smoothing effect reduced
+            sensitivity to individual base model failure modes specific to the training
+            distribution.
+          </p>
+        </div>
+      </section>
+
+      <!-- 07 RESULTS -->
+      <section class="cs-section">
+        <p class="cs-section-label">07 — Results</p>
+        <h2>What the stacked model <em>achieved</em></h2>
+        <div class="stats-row">
+          <div class="stat-card"><div class="stat-num"><em>0.0037</em></div><div class="stat-label">WLL (Training)</div></div>
+          <div class="stat-card"><div class="stat-num"><em>0.0043</em></div><div class="stat-label">WLL (Test Set 1)</div></div>
+          <div class="stat-card"><div class="stat-num"><em>0.0006</em></div> <div class="stat-label">WLL gap (train vs test)</div></div>
+        </div>
+        <p>
+          The LightGBM validation accuracy of 76.95% and weighted F1 of 0.75 show the model
+          performed well on majority classes. The stacked architecture's true advantage
+          appeared in the train-test WLL gap: a difference of just 0.0006 compared to
+          Random Forest's gap of 0.014 — a 20× improvement in generalization consistency.
+        </p>
+        <p>
+          Per-class inspection revealed persistent failures on ultra-rare classes (0, 1, 2, 22)
+          with fewer than 10 samples — a structural limitation no model selection strategy
+          can fully overcome without additional data.
+        </p>
+      </section>
+
+      <!-- 08 LIMITATIONS -->
+      <section class="cs-section">
+        <p class="cs-section-label">08 — Limitations &amp; Reflections</p>
+        <h2>What we'd <em>do differently</em></h2>
+        <ul class="limit-list">
+          <li data-num="01"><span><strong>Anonymous features limit interpretability.</strong> With 300 unlabelled NLP dimensions, it was impossible to construct domain-informed features or understand why specific features ranked highly. Raw NLP embeddings carry semantic structure that permutation importance can rank but not explain.</span></li>
+          <li data-num="02"><span><strong>SMOTE explored but not used.</strong> Synthetic oversampling of rare classes was considered to address minority class imbalance. However, with classes as small as 7 samples, synthetic augmentation risked amplifying noise rather than signal, and stratified class weighting was used instead. A more targeted SMOTE strategy on a larger dataset could materially improve minority class recall.</span></li>
+          <li data-num="03"><span><strong>Distribution shift mitigation was limited.</strong> While covariate shift was diagnosed and ensemble regularisation provided partial defence, dedicated domain adaptation methods (CORAL, importance reweighting, fine-tuning on the 202 labeled Test Set 2 points) were not fully explored.</span></li>
+          <li data-num="04"><span><strong>Hyperparameter tuning scope.</strong> GridSearchCV covered 72 LightGBM parameter combinations but the search space for the stacking meta-learner and XGBoost was more limited. Bayesian optimization could have surfaced better configurations more efficiently.</span></li>
+        </ul>
+      </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="cs-footer">
+      <p>© 2026 · Huiqi · Customer Feedback Classification</p>
+      <div class="cs-footer-links">
+        <a href="index.html" class="btn-primary" style="padding:0.5rem 1.4rem;">
+          ← Back to portfolio
+        </a>
+      </div>
+    </footer>
+
+  </div>
+
+  <script src="shared.js"></script>
+  <script>
+    /* Animate charts on scroll into view */
+    const animObs = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (!e.isIntersecting) return;
+        e.target.querySelectorAll('.bar-fill, .class-fill').forEach((el, i) => {
+          el.style.width = '0';
+          setTimeout(() => { el.style.width = el.getAttribute('data-w') + '%'; }, 120 + i * 70);
+        });
+        animObs.unobserve(e.target);
+      });
+    }, { threshold: 0.15 });
+
+    ['class-chart', 'feat-chart'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) animObs.observe(el);
+    });
+  </script>
+
+</body>
+</html>

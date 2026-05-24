@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Kindergarten Achievement Analysis — Huiqi's Data Science Case Study" />
+  <title>Kindergarten Achievement Analysis — Huiqi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* ── Accent overrides for this page ── */
+    :root {
+      --accent:       #5a7fa8;
+      --accent-light: #a8c4de;
+      --accent-pale:  #e8f0f8;
+      --accent-dark:  #2d4f6e;
+    }
+
+    /* Re-use rose vars but map to blue accent for this project */
+    .cs-header          { background: #1e2d3d; }
+    .cs-eyebrow         { color: var(--accent-light); }
+    .cs-title           { color: #f0f5fa; }
+    .cs-subtitle        { color: #8aa8c4; }
+    .cs-meta-row        { border-top-color: rgba(255,255,255,0.08); }
+    .cs-meta-label      { color: #8aa8c4; }
+    .cs-meta-value      { color: #f0f5fa; }
+    .cs-header-deco     { color: rgba(255,255,255,0.03); }
+    .back-btn           { color: #8aa8c4; }
+    .back-btn:hover     { color: var(--accent-light); }
+
+    .cs-section-label       { color: var(--accent); }
+    .cs-section-label::before { background: var(--accent-light); }
+
+    .highlight-box      { background: #1e2d3d; }
+    .highlight-box::before { background: var(--accent); }
+    .highlight-box strong { color: var(--accent-light) !important; }
+
+    .stat-num           { color: var(--accent-dark); }
+
+    /* Bar chart accent */
+    .bar-fill           { background: linear-gradient(90deg, var(--accent-light), var(--accent-dark)); }
+    .bar-label          { width: 160px; }
+
+    /* Model table */
+    .model-table tr.winner td         { background: rgba(90,127,168,0.08); }
+    .model-table tr.winner .model-name { color: var(--accent-dark); }
+    .model-badge                       { background: var(--accent-dark); }
+
+    /* Trigger num reuse for numbered circles */
+    .trig-num           { background: var(--accent); }
+
+    /* Findings */
+    .finding-card       { background: #1e2d3d; }
+    .finding-num        { color: rgba(90,127,168,0.25); }
+
+    /* Footer */
+    .cs-footer          { background: #1e2d3d; }
+
+    /* ── Sidebar dark for this page ── */
+    #sidebar            { background: #1e2d3d; border-color: rgba(255,255,255,0.06); }
+    .sidebar-logo       { color: var(--accent-light); }
+    .sidebar-line       { background: linear-gradient(to bottom, rgba(255,255,255,0.1), transparent); }
+    .nav-dot::after     { color: var(--accent-light); }
+    .nav-dot.active     { background: var(--accent); }
+    .nav-dot:hover      { background: var(--accent-light); }
+
+    /* ── Score comparison bars ── */
+    .score-compare      { margin: 2rem 0; }
+    .sc-row             { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
+    .sc-label           { font-family: var(--mono); font-size: 0.68rem; color: var(--warm-gray); width: 130px; flex-shrink: 0; text-align: right; }
+    .sc-track           { flex: 1; height: 10px; background: var(--cream-dark); border-radius: 5px; overflow: hidden; position: relative; }
+    .sc-fill            { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 5px; width: 0; transition: width 1.2s cubic-bezier(0.4,0,0.2,1); }
+    .sc-fill.read       { background: linear-gradient(90deg, #a8c4de, #2d4f6e); }
+    .sc-fill.math       { background: linear-gradient(90deg, #c4b8d4, #4d3d6e); }
+    .sc-val             { font-family: var(--mono); font-size: 0.68rem; color: var(--charcoal); width: 48px; flex-shrink: 0; text-align: right; }
+
+    /* legend */
+    .score-legend       { display: flex; gap: 2rem; margin-bottom: 1.5rem; }
+    .score-legend-item  { display: flex; align-items: center; gap: 0.5rem; font-family: var(--mono); font-size: 0.65rem; color: var(--warm-gray); letter-spacing: 0.1em; text-transform: uppercase; }
+    .score-legend-dot   { width: 10px; height: 10px; border-radius: 2px; }
+
+    /* Data quality table */
+    .dq-table           { width: 100%; border-collapse: collapse; margin: 2rem 0; font-size: 0.86rem; }
+    .dq-table th        { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.16em; color: var(--warm-gray); text-transform: uppercase; text-align: left; padding: 0.7rem 1rem; border-bottom: 1px solid var(--cream-dark); }
+    .dq-table td        { padding: 0.75rem 1rem; border-bottom: 1px solid var(--cream-dark); color: var(--charcoal); }
+    .dq-table .fix-kept { color: #5a7f5a; font-size: 0.78rem; }
+    .dq-table .fix-drop { color: var(--rose); font-size: 0.78rem; }
+
+    /* Decision pills */
+    .pill               { display: inline-block; padding: 0.15rem 0.7rem; border-radius: 20px; font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.08em; margin: 0.2rem; }
+    .pill-blue          { background: var(--accent-pale); color: var(--accent-dark); }
+    .pill-green         { background: #e8f5e8; color: #2d5a2d; }
+    .pill-amber         { background: #fdf3e0; color: #7a5a1a; }
+
+    /* Three-col for findings */
+    .three-col          { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5px; margin: 2.5rem 0; }
+
+    @media (max-width: 768px) {
+      .three-col        { grid-template-columns: 1fr; }
+      .score-legend     { flex-wrap: wrap; gap: 1rem; }
+      .sc-label         { width: 100px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="cursor"></div>
+  <div id="cursor-ring"></div>
+
+  <!-- Sidebar -->
+  <div id="sidebar" class="dark">
+    <a href="index.html" class="sidebar-logo">Huiqi</a>
+    <div class="sidebar-line"></div>
+  </div>
+
+  <div class="cs-wrap">
+
+    <!-- HEADER -->
+    <header class="cs-header">
+      <div class="cs-header-deco">K5</div>
+      <div class="cs-header-inner">
+        <a href="index.html" class="back-btn">Back to portfolio</a>
+        <p class="cs-eyebrow">Case Study · 02</p>
+        <h1 class="cs-title">Kindergarten Achievement Analysis</h1>
+        <p class="cs-subtitle">
+          Predicting reading and math scores for kindergarten students using machine learning,
+          and identifying the classroom conditions and socioeconomic factors that drive early achievement.
+        </p>
+        <div class="cs-meta-row">
+          <div><p class="cs-meta-label">Context</p>    <p class="cs-meta-value">Academic · Group Project</p></div>
+          <div><p class="cs-meta-label">Role</p>       <p class="cs-meta-value">Modelling, EDA &amp; Feature Analysis</p></div>
+          <div><p class="cs-meta-label">Stack</p>      <p class="cs-meta-value">Python · LightGBM · XGBoost · SHAP · statsmodels</p></div>
+          <div><p class="cs-meta-label">Dataset</p>    <p class="cs-meta-value">Project STAR — 5,060 kindergarten students</p></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="cs-body">
+
+      <!-- 01 PROBLEM -->
+      <section class="cs-section">
+        <p class="cs-section-label">01 — Business Problem</p>
+        <h2>What classroom conditions <em>shape early learning</em>?</h2>
+        <p>
+          Australia is in the midst of major early-childhood education reforms — raising questions about
+          how class size, teacher quality, and socioeconomic factors affect student outcomes. The
+          landmark <strong>Project STAR</strong> experiment in Tennessee randomly assigned over 11,000
+          kindergarten students to small classes, regular classes, or regular classes with a teacher's aide.
+          Because assignment was random within schools, causal inferences about class size are credible.
+        </p>
+        <p>
+          Chetty et al. (2011) extended this work by linking STAR records to U.S. tax data, finding
+          that kindergarten classroom quality predicts higher earnings, college attendance, and better
+          neighbourhood outcomes in adulthood — making this one of the most consequential early
+          education datasets in existence.
+        </p>
+        <div class="highlight-box">
+          <p>
+            <strong>Objective:</strong> Build predictive models for reading and math scores using
+            classroom and student covariates, identify the most important drivers of performance,
+            and minimise combined out-of-sample MSE on a withheld test set.
+          </p>
+        </div>
+        <div class="stats-row">
+          <div class="stat-card"><div class="stat-num" style="font-size:2.2rem;">5,060</div><div class="stat-label">Students</div></div>
+          <div class="stat-card"><div class="stat-num" style="font-size:2.2rem;">13</div><div class="stat-label">Features</div></div>
+          <div class="stat-card"><div class="stat-num" style="font-size:2.2rem;">5</div><div class="stat-label">Models compared</div></div>
+        </div>
+      </section>
+
+      <!-- 02 EDA -->
+      <section class="cs-section">
+        <p class="cs-section-label">02 — Exploratory Data Analysis</p>
+        <h2>Understanding the data <em>before touching a model</em></h2>
+        <p>
+          Before modelling, thorough EDA revealed the dataset's structure, missing data patterns,
+          and the variables most likely to matter. Several decisions made here directly affected
+          downstream model performance.
+        </p>
+
+        <!-- Data quality table -->
+        <table class="dq-table">
+          <thead>
+            <tr><th>Variable</th><th>Missing %</th><th>Issue</th><th>Decision</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>score_read / score_math</td><td>8.2% / 7.0%</td><td>Missing targets</td><td><span class="fix-drop">Rows dropped</span></td></tr>
+            <tr><td>ladder</td><td>10.1%</td><td>High missingness + ordinal leakage risk</td><td><span class="fix-drop">Column dropped</span></td></tr>
+            <tr><td>schooldistrict_id</td><td>0%</td><td>VIF = 66.9, collinear with school_id</td><td><span class="fix-drop">Column dropped</span></td></tr>
+            <tr><td>experience</td><td>0.4%</td><td>Numeric, low missingness</td><td><span class="fix-kept">Median imputed</span></td></tr>
+            <tr><td>ethnicity</td><td>&lt;0.1%</td><td>Sparse categories (asian, hispanic, amindian)</td><td><span class="fix-kept">Grouped → 'other'</span></td></tr>
+            <tr><td>degree</td><td>0.4%</td><td>Sparse categories (specialist, master+)</td><td><span class="fix-kept">Grouped → 'other'</span></td></tr>
+            <tr><td>lunch, birth, class_type, t_ethnicity</td><td>&lt;1%</td><td>Categorical, low missingness</td><td><span class="fix-kept">'Unknown' category</span></td></tr>
+          </tbody>
+        </table>
+
+        <!-- Multicollinearity note -->
+        <p>
+          <strong>Multicollinearity check (VIF):</strong> school_id and schooldistrict_id had VIF
+          values of 68.1 and 66.9 respectively — extreme collinearity. schooldistrict_id was dropped;
+          school_id was retained as it carries the finer-grained school-level variation relevant to
+          the Project STAR experimental design.
+        </p>
+        <p>
+          <strong>Outlier removal:</strong> IQR method applied to score_read, score_math, and
+          experience. This removed a small number of extreme values that would have distorted
+          model training without representing realistic student performance.
+        </p>
+
+        <!-- Score distributions by group -->
+        <h2 style="margin-top:3rem;">Key bivariate findings — <em>what predicts scores?</em></h2>
+        <p>
+          Boxplots and grouped means revealed clear patterns across every categorical variable.
+          The strongest observed effects were socioeconomic (lunch eligibility as SES proxy) and
+          classroom structure (small class vs regular).
+        </p>
+
+        <div class="score-legend">
+          <div class="score-legend-item"><div class="score-legend-dot" style="background:#2d4f6e;"></div>Reading</div>
+          <div class="score-legend-item"><div class="score-legend-dot" style="background:#4d3d6e;"></div>Math</div>
+        </div>
+
+        <!-- Class type -->
+        <p style="font-family:var(--mono);font-size:0.65rem;letter-spacing:0.15em;color:var(--accent);text-transform:uppercase;margin-bottom:0.8rem;">Class type</p>
+        <div class="score-compare" id="chart-class">
+          <div class="sc-row"><div class="sc-label">Small</div>     <div class="sc-track"><div class="sc-fill read" data-w="88"></div></div><div class="sc-val">439.9</div></div>
+          <div class="sc-row"><div class="sc-label">Regular + Aide</div><div class="sc-track"><div class="sc-fill read" data-w="84"></div></div><div class="sc-val">435.0</div></div>
+          <div class="sc-row"><div class="sc-label">Regular</div>   <div class="sc-track"><div class="sc-fill read" data-w="83"></div></div><div class="sc-val">434.4</div></div>
+          <div class="sc-row"><div class="sc-label">Small</div>     <div class="sc-track"><div class="sc-fill math" data-w="86"></div></div><div class="sc-val">491.0</div></div>
+          <div class="sc-row"><div class="sc-label">Regular + Aide</div><div class="sc-track"><div class="sc-fill math" data-w="80"></div></div><div class="sc-val">483.0</div></div>
+          <div class="sc-row"><div class="sc-label">Regular</div>   <div class="sc-track"><div class="sc-fill math" data-w="79"></div></div><div class="sc-val">482.9</div></div>
+        </div>
+
+        <!-- Lunch -->
+        <p style="font-family:var(--mono);font-size:0.65rem;letter-spacing:0.15em;color:var(--accent);text-transform:uppercase;margin:2rem 0 0.8rem;">Lunch eligibility (SES proxy)</p>
+        <div class="score-compare" id="chart-lunch">
+          <div class="sc-row"><div class="sc-label">Non-free</div>  <div class="sc-track"><div class="sc-fill read" data-w="92"></div></div><div class="sc-val">444.6</div></div>
+          <div class="sc-row"><div class="sc-label">Free</div>      <div class="sc-track"><div class="sc-fill read" data-w="80"></div></div><div class="sc-val">427.5</div></div>
+          <div class="sc-row"><div class="sc-label">Non-free</div>  <div class="sc-track"><div class="sc-fill math" data-w="90"></div></div><div class="sc-val">496.5</div></div>
+          <div class="sc-row"><div class="sc-label">Free</div>      <div class="sc-track"><div class="sc-fill math" data-w="78"></div></div><div class="sc-val">473.6</div></div>
+        </div>
+
+        <!-- School type -->
+        <p style="font-family:var(--mono);font-size:0.65rem;letter-spacing:0.15em;color:var(--accent);text-transform:uppercase;margin:2rem 0 0.8rem;">School location</p>
+        <div class="score-compare" id="chart-school">
+          <div class="sc-row"><div class="sc-label">Suburban</div>  <div class="sc-track"><div class="sc-fill read" data-w="90"></div></div><div class="sc-val">441.3</div></div>
+          <div class="sc-row"><div class="sc-label">Urban</div>     <div class="sc-track"><div class="sc-fill read" data-w="89"></div></div><div class="sc-val">440.7</div></div>
+          <div class="sc-row"><div class="sc-label">Rural</div>     <div class="sc-track"><div class="sc-fill read" data-w="86"></div></div><div class="sc-val">437.2</div></div>
+          <div class="sc-row"><div class="sc-label">Inner-city</div><div class="sc-track"><div class="sc-fill read" data-w="80"></div></div><div class="sc-val">427.5</div></div>
+        </div>
+
+        <p style="margin-top:2rem;">
+          The reading score gap between free-lunch and non-free-lunch students (~17 points) is
+          larger than the gap between small and regular classes (~5.5 points) — suggesting
+          socioeconomic status is the dominant observable driver of achievement even within an
+          experimentally randomized setting.
+        </p>
+      </section>
+
+      <!-- 03 MODELS -->
+      <section class="cs-section">
+        <p class="cs-section-label">03 — Modelling</p>
+        <h2>Five models. <em>Two scores. One combined objective.</em></h2>
+        <p>
+          Separate models were trained for reading and math scores. The combined evaluation
+          metric is MSE<sub>o</sub> = (MSE<sub>read</sub> + MSE<sub>math</sub>) / 2, which is what
+          the assignment competition leaderboard uses. All models used 80/20 train-test split with
+          random state 42, and the same preprocessing pipeline (StandardScaler for numeric,
+          OneHotEncoder drop='first' for categorical).
+        </p>
+
+        <table class="model-table">
+          <thead>
+            <tr><th>Model</th><th>MSE Read</th><th>MSE Math</th><th>MSEₒ (Combined)</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="model-name">OLS (Linear Regression)</td><td>—</td><td>—</td><td>baseline</td></tr>
+            <tr><td class="model-name">Lasso / Ridge (Regularised)</td><td>—</td><td>—</td><td>~1,050</td></tr>
+            <tr><td class="model-name">Random Forest (tuned)</td><td>537.4</td><td>~1,610</td><td>~1,073</td></tr>
+            <tr><td class="model-name">LightGBM (baseline)</td><td>477.5</td><td>1,508.0</td><td>992.8</td></tr>
+            <tr><td class="model-name">LightGBM (tuned)</td><td>467.4</td><td>1,514.2</td><td>990.8</td></tr>
+            <tr class="winner">
+              <td class="model-name">XGBoost (tuned) <span class="model-badge">Selected</span></td>
+              <td><strong>466.9</strong></td>
+              <td><strong>1,514.8</strong></td>
+              <td><strong>990.8</strong></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p>
+          XGBoost and LightGBM converged to near-identical MSEₒ (~990.8). XGBoost was selected
+          as the final model due to marginally lower reading MSE and better interpretability via
+          SHAP. The tree-based models outperformed linear methods substantially — confirming
+          non-linear interactions between socioeconomic and classroom variables.
+        </p>
+        <div class="highlight-box">
+          <p>
+            <strong>Key modelling insight:</strong> The reading and math score predictions behave
+            differently. Reading is more predictable (lower MSE) while math shows higher variance —
+            consistent with the research literature suggesting math achievement is more sensitive
+            to classroom-level factors that aren't fully captured in cross-sectional data.
+          </p>
+        </div>
+
+        <!-- Preprocessing pills -->
+        <p style="margin-top:2rem;margin-bottom:0.8rem;">Preprocessing pipeline:</p>
+        <div>
+          <span class="pill pill-blue">StandardScaler (numeric)</span>
+          <span class="pill pill-blue">OneHotEncoder drop='first'</span>
+          <span class="pill pill-blue">IQR outlier removal</span>
+          <span class="pill pill-green">Ladder → dropped</span>
+          <span class="pill pill-green">schooldistrict_id → dropped</span>
+          <span class="pill pill-amber">Sparse ethnicity → 'other'</span>
+          <span class="pill pill-amber">Sparse degree → 'other'</span>
+        </div>
+      </section>
+
+      <!-- 04 HYPERPARAMETER TUNING -->
+      <section class="cs-section">
+        <p class="cs-section-label">04 — Hyperparameter Tuning</p>
+        <h2>GridSearchCV across <em>72 parameter combinations</em></h2>
+        <p>
+          Both LightGBM and Random Forest were tuned via 3-fold GridSearchCV. The LightGBM grid
+          covered n_estimators {500, 1000, 2000}, learning_rate {0.1, 0.05, 0.03},
+          num_leaves {31, 63}, and colsample_bytree/subsample variations — 72 candidates totalling
+          216 CV fits per target variable.
+        </p>
+
+        <div class="two-col">
+          <div>
+            <p style="font-family:var(--mono);font-size:0.62rem;letter-spacing:0.18em;color:var(--accent);text-transform:uppercase;margin-bottom:1rem;">XGBoost — final params</p>
+            <div style="background:var(--cream-dark);border-radius:4px;padding:1.5rem;font-family:var(--mono);font-size:0.78rem;line-height:2;color:var(--charcoal);">
+              n_estimators: 300<br/>
+              max_depth: 3<br/>
+              learning_rate: 0.1<br/>
+              subsample: 0.8<br/>
+              colsample_bytree: 1.0<br/>
+              gamma: 0.1<br/>
+              reg_lambda: 1
+            </div>
+          </div>
+          <div>
+            <p style="font-family:var(--mono);font-size:0.62rem;letter-spacing:0.18em;color:var(--accent);text-transform:uppercase;margin-bottom:1rem;">Random Forest — best CV params</p>
+            <div style="background:var(--cream-dark);border-radius:4px;padding:1.5rem;font-family:var(--mono);font-size:0.78rem;line-height:2;color:var(--charcoal);">
+              n_estimators: 500<br/>
+              max_depth: 15<br/>
+              max_features: 'sqrt'<br/>
+              min_samples_leaf: 2<br/>
+              min_samples_split: 2<br/>
+              Best CV MSE (read): 539.99
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 05 FEATURE IMPORTANCE -->
+      <section class="cs-section">
+        <p class="cs-section-label">05 — Feature Importance (SHAP)</p>
+        <h2>What <em>actually drives</em> student achievement?</h2>
+        <p>
+          SHAP (SHapley Additive exPlanations) values were computed for the tuned XGBoost model,
+          providing model-agnostic attribution of each feature's contribution to predictions.
+          Features were grouped by original variable to summarise findings clearly.
+        </p>
+
+        <p style="font-family:var(--mono);font-size:0.65rem;letter-spacing:0.15em;color:var(--accent);text-transform:uppercase;margin:2rem 0 0.8rem;">Reading score — grouped SHAP importance (mean |SHAP|)</p>
+        <div class="bar-chart" id="shap-read">
+          <div class="bar-row"><div class="bar-label">School ID</div>      <div class="bar-track"><div class="bar-fill" data-w="100"></div></div><div class="bar-val">6.67</div></div>
+          <div class="bar-row"><div class="bar-label">Lunch (SES)</div>    <div class="bar-track"><div class="bar-fill" data-w="42"></div></div> <div class="bar-val">2.81</div></div>
+          <div class="bar-row"><div class="bar-label">Experience</div>     <div class="bar-track"><div class="bar-fill" data-w="40"></div></div> <div class="bar-val">2.68</div></div>
+          <div class="bar-row"><div class="bar-label">Gender</div>         <div class="bar-track"><div class="bar-fill" data-w="34"></div></div> <div class="bar-val">2.24</div></div>
+          <div class="bar-row"><div class="bar-label">Ethnicity</div>      <div class="bar-track"><div class="bar-fill" data-w="20"></div></div> <div class="bar-val">1.35</div></div>
+          <div class="bar-row"><div class="bar-label">Class type</div>     <div class="bar-track"><div class="bar-fill" data-w="20"></div></div> <div class="bar-val">1.31</div></div>
+          <div class="bar-row"><div class="bar-label">School location</div><div class="bar-track"><div class="bar-fill" data-w="9"></div></div>  <div class="bar-val">0.63</div></div>
+          <div class="bar-row"><div class="bar-label">Birth quarter</div>  <div class="bar-track"><div class="bar-fill" data-w="7"></div></div>  <div class="bar-val">0.46</div></div>
+        </div>
+
+        <p style="font-family:var(--mono);font-size:0.65rem;letter-spacing:0.15em;color:var(--accent);text-transform:uppercase;margin:2rem 0 0.8rem;">Math score — grouped SHAP importance (mean |SHAP|)</p>
+        <div class="bar-chart" id="shap-math">
+          <div class="bar-row"><div class="bar-label">School ID</div>      <div class="bar-track"><div class="bar-fill" data-w="100"></div></div><div class="bar-val">11.20</div></div>
+          <div class="bar-row"><div class="bar-label">Lunch (SES)</div>    <div class="bar-track"><div class="bar-fill" data-w="38"></div></div> <div class="bar-val">4.23</div></div>
+          <div class="bar-row"><div class="bar-label">Experience</div>     <div class="bar-track"><div class="bar-fill" data-w="35"></div></div> <div class="bar-val">3.90</div></div>
+          <div class="bar-row"><div class="bar-label">Ethnicity</div>      <div class="bar-track"><div class="bar-fill" data-w="29"></div></div> <div class="bar-val">3.23</div></div>
+          <div class="bar-row"><div class="bar-label">Gender</div>         <div class="bar-track"><div class="bar-fill" data-w="24"></div></div> <div class="bar-val">2.67</div></div>
+          <div class="bar-row"><div class="bar-label">Class type</div>     <div class="bar-track"><div class="bar-fill" data-w="21"></div></div> <div class="bar-val">2.37</div></div>
+          <div class="bar-row"><div class="bar-label">School location</div><div class="bar-track"><div class="bar-fill" data-w="8"></div></div>  <div class="bar-val">0.92</div></div>
+          <div class="bar-row"><div class="bar-label">Birth quarter</div>  <div class="bar-track"><div class="bar-fill" data-w="6"></div></div>  <div class="bar-val">0.63</div></div>
+        </div>
+
+        <p style="margin-top:1.5rem;">
+          <strong>School ID dominates both models</strong> — capturing unobserved school-level
+          quality variation (principal effectiveness, local culture, funding) that no other
+          individual feature can replicate. This is expected given the within-school randomisation
+          of Project STAR. <strong>Lunch eligibility (SES proxy) and teacher experience</strong>
+          are the next most influential, both substantially outweighing class type — the variable
+          at the centre of the original experiment.
+        </p>
+      </section>
+
+      <!-- 06 KEY FINDINGS -->
+      <section class="cs-section">
+        <p class="cs-section-label">06 — Key Findings</p>
+        <h2>What this means <em>for education policy</em></h2>
+        <div class="three-col">
+          <div class="finding-card">
+            <div class="finding-num">01</div>
+            <p class="finding-title">SES is the dominant driver</p>
+            <p class="finding-desc">Free-lunch eligibility — a proxy for poverty — is the strongest observable predictor after school identity. Students from lower-SES households score ~17 points lower in reading on average.</p>
+          </div>
+          <div class="finding-card">
+            <div class="finding-num">02</div>
+            <p class="finding-title">Small classes do help</p>
+            <p class="finding-desc">Small class assignment lifts reading by ~5.5 points and math by ~8 points on average — a meaningful effect that SHAP confirms is real, though smaller than the SES gap.</p>
+          </div>
+          <div class="finding-card">
+            <div class="finding-num">03</div>
+            <p class="finding-title">Teacher experience matters</p>
+            <p class="finding-desc">Experience ranks third in SHAP importance for reading and second for math. More experienced teachers produce measurably better outcomes, independent of class type.</p>
+          </div>
+          <div class="finding-card">
+            <div class="finding-num">04</div>
+            <p class="finding-title">Inner-city gap is real</p>
+            <p class="finding-desc">Inner-city school students average 13.8 points below suburban peers in reading — a gap that persists after controlling for individual characteristics.</p>
+          </div>
+          <div class="finding-card">
+            <div class="finding-num">05</div>
+            <p class="finding-title">School-level effects dominate</p>
+            <p class="finding-desc">School ID has by far the highest SHAP importance, absorbing unobserved quality variation. This aligns with Chetty et al.'s finding that classroom quality predicts adult outcomes decades later.</p>
+          </div>
+          <div class="finding-card">
+            <div class="finding-num">06</div>
+            <p class="finding-title">Tree models beat linear</p>
+            <p class="finding-desc">XGBoost and LightGBM substantially outperformed OLS and regularised models (MSEₒ ~990 vs ~1,050+), confirming non-linear and interaction effects in the data.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 07 LIMITATIONS -->
+      <section class="cs-section">
+        <p class="cs-section-label">07 — Limitations &amp; Reflections</p>
+        <h2>What we'd <em>do differently</em></h2>
+        <ul class="limit-list">
+          <li data-num="01"><span><strong>Cross-sectional data only.</strong> Models predict a snapshot — they can't capture learning trajectories or the compounding effects of classroom quality over multiple years that Chetty et al. document in the longitudinal data.</span></li>
+          <li data-num="02"><span><strong>SES measured by a single binary proxy.</strong> Free-lunch eligibility is a rough measure of socioeconomic status. Household income, parental education, and neighbourhood quality would likely improve model fit and reveal more nuanced effects.</span></li>
+          <li data-num="03"><span><strong>School ID as a black box.</strong> While school_id dominates SHAP, it absorbs all unobserved school-level variation without explanation. Ideally, school-level features (per-pupil funding, teacher turnover, class sizes) would replace it.</span></li>
+          <li data-num="04"><span><strong>Random assignment helps — but isn't perfect.</strong> Within-school randomisation removes neighbourhood confounders, but can't account for parent lobbying to change class assignments, or mid-year transfers that dilute the treatment effect.</span></li>
+        </ul>
+      </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="cs-footer">
+      <p>© 2026 · Huiqi · Kindergarten Achievement Analysis</p>
+      <div class="cs-footer-links">
+        <a href="index.html" class="btn-primary" style="padding:0.5rem 1.4rem;">
+          ← Back to portfolio
+        </a>
+      </div>
+    </footer>
+
+  </div><!-- /cs-wrap -->
+
+  <script src="shared.js"></script>
+  <script>
+    /* Animate all bar/score charts when they scroll into view */
+    const animObs = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (!e.isIntersecting) return;
+        /* bar-fill elements */
+        e.target.querySelectorAll('.bar-fill').forEach((el, i) => {
+          el.style.width = '0';
+          setTimeout(() => { el.style.width = el.getAttribute('data-w') + '%'; }, 150 + i * 80);
+        });
+        /* sc-fill elements */
+        e.target.querySelectorAll('.sc-fill').forEach((el, i) => {
+          el.style.width = '0';
+          setTimeout(() => { el.style.width = el.getAttribute('data-w') + '%'; }, 150 + i * 60);
+        });
+        animObs.unobserve(e.target);
+      });
+    }, { threshold: 0.15 });
+
+    ['shap-read','shap-math','chart-class','chart-lunch','chart-school'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) animObs.observe(el);
+    });
+  </script>
+
+</body>
+</html>
