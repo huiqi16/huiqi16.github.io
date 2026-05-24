@@ -1,6 +1,6 @@
 /* ══════════════════════════════════════
    PORTFOLIO — SHARED JAVASCRIPT
-   Used by: index.html + f1-case-study.html
+   Used by: index.html + f1-telemetry.html
 ══════════════════════════════════════ */
 
 
