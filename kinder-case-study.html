@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Kindergarten Achievement Analysis — Huiqi's Data Science Case Study" />
-  <title>Kindergarten Achievement Analysis — Huiqi</title>
+  <meta name="description" content="Kindergarten Achievement Analysis - Huiqi's Data Science Case Study" />
+  <title>Kindergarten Achievement Analysis</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet" />
@@ -106,9 +106,6 @@
 </head>
 <body>
 
-  <div id="cursor"></div>
-  <div id="cursor-ring"></div>
-
   <!-- Sidebar -->
   <div id="sidebar" class="dark">
     <a href="index.html" class="sidebar-logo">Huiqi</a>
@@ -121,8 +118,14 @@
     <header class="cs-header">
       <div class="cs-header-deco">K5</div>
       <div class="cs-header-inner">
-        <a href="index.html" class="back-btn">Back to portfolio</a>
-        <p class="cs-eyebrow">Case Study · 02</p>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:2rem;">
+        <a href="index.html#projects" class="back-btn">Back to portfolio</a>
+        <a href="https://github.com/huiqi16/kindergarten-achievement-analysis" target="_blank" rel="noopener noreferrer"
+          style="font-family:var(--mono); font-size:0.7rem; letter-spacing:0.1em; color:#a8c4de; text-decoration:none; border-bottom:1px solid rgba(168,196,222,0.4); padding-bottom:2px;">
+          GitHub ↗
+        </a>
+      </div>
+      <p class="cs-eyebrow">Case Study · 02</p>
         <h1 class="cs-title">Kindergarten Achievement Analysis</h1>
         <p class="cs-subtitle">
           Predicting reading and math scores for kindergarten students using machine learning,
@@ -132,7 +135,7 @@
           <div><p class="cs-meta-label">Context</p>    <p class="cs-meta-value">Academic · Group Project</p></div>
           <div><p class="cs-meta-label">Role</p>       <p class="cs-meta-value">Modelling, EDA &amp; Feature Analysis</p></div>
           <div><p class="cs-meta-label">Stack</p>      <p class="cs-meta-value">Python · LightGBM · XGBoost · SHAP · statsmodels</p></div>
-          <div><p class="cs-meta-label">Dataset</p>    <p class="cs-meta-value">Project STAR — 5,060 kindergarten students</p></div>
+          <div><p class="cs-meta-label">Dataset</p>    <p class="cs-meta-value">Project STAR - 5,060 kindergarten students</p></div>
         </div>
       </div>
     </header>
@@ -141,10 +144,10 @@
 
       <!-- 01 PROBLEM -->
       <section class="cs-section">
-        <p class="cs-section-label">01 — Business Problem</p>
+        <p class="cs-section-label">01 Business Problem</p>
         <h2>What classroom conditions <em>shape early learning</em>?</h2>
         <p>
-          Australia is in the midst of major early-childhood education reforms — raising questions about
+          Australia is in the midst of major early-childhood education reforms - raising questions about
           how class size, teacher quality, and socioeconomic factors affect student outcomes. The
           landmark <strong>Project STAR</strong> experiment in Tennessee randomly assigned over 11,000
           kindergarten students to small classes, regular classes, or regular classes with a teacher's aide.
@@ -153,7 +156,7 @@
         <p>
           Chetty et al. (2011) extended this work by linking STAR records to U.S. tax data, finding
           that kindergarten classroom quality predicts higher earnings, college attendance, and better
-          neighbourhood outcomes in adulthood — making this one of the most consequential early
+          neighbourhood outcomes in adulthood - making this one of the most consequential early
           education datasets in existence.
         </p>
         <div class="highlight-box">
@@ -166,13 +169,13 @@
         <div class="stats-row">
           <div class="stat-card"><div class="stat-num" style="font-size:2.2rem;">5,060</div><div class="stat-label">Students</div></div>
           <div class="stat-card"><div class="stat-num" style="font-size:2.2rem;">13</div><div class="stat-label">Features</div></div>
-          <div class="stat-card"><div class="stat-num" style="font-size:2.2rem;">5</div><div class="stat-label">Models compared</div></div>
+          <div class="stat-card"><div class="stat-num" style="font-size:2.2rem;">9</div><div class="stat-label">Models compared</div></div>
         </div>
       </section>
 
       <!-- 02 EDA -->
       <section class="cs-section">
-        <p class="cs-section-label">02 — Exploratory Data Analysis</p>
+        <p class="cs-section-label">02 Exploratory Data Analysis</p>
         <h2>Understanding the data <em>before touching a model</em></h2>
         <p>
           Before modelling, thorough EDA revealed the dataset's structure, missing data patterns,
@@ -199,7 +202,7 @@
         <!-- Multicollinearity note -->
         <p>
           <strong>Multicollinearity check (VIF):</strong> school_id and schooldistrict_id had VIF
-          values of 68.1 and 66.9 respectively — extreme collinearity. schooldistrict_id was dropped;
+          values of 68.1 and 66.9 respectively - extreme collinearity. schooldistrict_id was dropped;
           school_id was retained as it carries the finer-grained school-level variation relevant to
           the Project STAR experimental design.
         </p>
@@ -210,7 +213,7 @@
         </p>
 
         <!-- Score distributions by group -->
-        <h2 style="margin-top:3rem;">Key bivariate findings — <em>what predicts scores?</em></h2>
+        <h2 style="margin-top:3rem;">Key bivariate findings - <em>what predicts scores?</em></h2>
         <p>
           Boxplots and grouped means revealed clear patterns across every categorical variable.
           The strongest observed effects were socioeconomic (lunch eligibility as SES proxy) and
@@ -249,11 +252,15 @@
           <div class="sc-row"><div class="sc-label">Urban</div>     <div class="sc-track"><div class="sc-fill read" data-w="89"></div></div><div class="sc-val">440.7</div></div>
           <div class="sc-row"><div class="sc-label">Rural</div>     <div class="sc-track"><div class="sc-fill read" data-w="86"></div></div><div class="sc-val">437.2</div></div>
           <div class="sc-row"><div class="sc-label">Inner-city</div><div class="sc-track"><div class="sc-fill read" data-w="80"></div></div><div class="sc-val">427.5</div></div>
+          <div class="sc-row"><div class="sc-label">Suburban</div>  <div class="sc-track"><div class="sc-fill math" data-w="90"></div></div><div class="sc-val">496.5</div></div>
+          <div class="sc-row"><div class="sc-label">Urban</div>     <div class="sc-track"><div class="sc-fill math" data-w="88"></div></div><div class="sc-val">488.2</div></div>
+          <div class="sc-row"><div class="sc-label">Rural</div>     <div class="sc-track"><div class="sc-fill math" data-w="85"></div></div><div class="sc-val">484.1</div></div>
+          <div class="sc-row"><div class="sc-label">Inner-city</div><div class="sc-track"><div class="sc-fill math" data-w="78"></div></div><div class="sc-val">473.6</div></div>
         </div>
 
         <p style="margin-top:2rem;">
           The reading score gap between free-lunch and non-free-lunch students (~17 points) is
-          larger than the gap between small and regular classes (~5.5 points) — suggesting
+          larger than the gap between small and regular classes (~5.5 points) - suggesting
           socioeconomic status is the dominant observable driver of achievement even within an
           experimentally randomized setting.
         </p>
@@ -261,7 +268,7 @@
 
       <!-- 03 MODELS -->
       <section class="cs-section">
-        <p class="cs-section-label">03 — Modelling</p>
+        <p class="cs-section-label">03 Modelling</p>
         <h2>Five models. <em>Two scores. One combined objective.</em></h2>
         <p>
           Separate models were trained for reading and math scores. The combined evaluation
@@ -276,30 +283,33 @@
             <tr><th>Model</th><th>MSE Read</th><th>MSE Math</th><th>MSEₒ (Combined)</th></tr>
           </thead>
           <tbody>
-            <tr><td class="model-name">OLS (Linear Regression)</td><td>—</td><td>—</td><td>baseline</td></tr>
-            <tr><td class="model-name">Lasso / Ridge (Regularised)</td><td>—</td><td>—</td><td>~1,050</td></tr>
-            <tr><td class="model-name">Random Forest (tuned)</td><td>537.4</td><td>~1,610</td><td>~1,073</td></tr>
-            <tr><td class="model-name">LightGBM (baseline)</td><td>477.5</td><td>1,508.0</td><td>992.8</td></tr>
-            <tr><td class="model-name">LightGBM (tuned)</td><td>467.4</td><td>1,514.2</td><td>990.8</td></tr>
+            <tr><td class="model-name">OLS (Linear Regression)</td><td>624.73</td><td>1,841.26</td><td>1,232.99</td></tr>
+            <tr><td class="model-name">LASSO</td><td>627.17</td><td>1,830.82</td><td>1,228.99</td></tr>
+            <tr><td class="model-name">Ridge</td><td>627.14</td><td>1,830.91</td><td>1,229.02</td></tr>
+            <tr><td class="model-name">Elastic Net</td><td>627.17</td><td>1,830.13</td><td>1,228.65</td></tr>
+            <tr><td class="model-name">Neural Network (MLP)</td><td>694.39</td><td>1,800.46</td><td>1,247.42</td></tr>
+            <tr><td class="model-name">Decision Tree</td><td>801.29</td><td>2,694.71</td><td>1,748.00</td></tr>
+            <tr><td class="model-name">Random Forest</td><td>545.78</td><td>1,659.12</td><td>1,102.45</td></tr>
+            <tr><td class="model-name">LightGBM</td><td>467.42</td><td>1,514.18</td><td>990.80</td></tr>
             <tr class="winner">
-              <td class="model-name">XGBoost (tuned) <span class="model-badge">Selected</span></td>
-              <td><strong>466.9</strong></td>
-              <td><strong>1,514.8</strong></td>
-              <td><strong>990.8</strong></td>
+              <td class="model-name">XGBoost <span class="model-badge">Selected</span></td>
+              <td><strong>467.45</strong></td>
+              <td><strong>1,513.21</strong></td>
+              <td><strong>990.33</strong></td>
             </tr>
           </tbody>
         </table>
 
         <p>
-          XGBoost and LightGBM converged to near-identical MSEₒ (~990.8). XGBoost was selected
-          as the final model due to marginally lower reading MSE and better interpretability via
-          SHAP. The tree-based models outperformed linear methods substantially — confirming
+          XGBoost and LightGBM converged to near-identical MSEₒ. XGBoost was selected
+          as the final model for achieving the lowest combined MSE of 990.33, marginally beating
+          LightGBM's 990.80. The tree-based models outperformed linear methods substantially - confirming
           non-linear interactions between socioeconomic and classroom variables.
         </p>
         <div class="highlight-box">
           <p>
             <strong>Key modelling insight:</strong> The reading and math score predictions behave
-            differently. Reading is more predictable (lower MSE) while math shows higher variance —
+            differently. Reading is more predictable (lower MSE) while math shows higher variance -
             consistent with the research literature suggesting math achievement is more sensitive
             to classroom-level factors that aren't fully captured in cross-sectional data.
           </p>
@@ -320,18 +330,18 @@
 
       <!-- 04 HYPERPARAMETER TUNING -->
       <section class="cs-section">
-        <p class="cs-section-label">04 — Hyperparameter Tuning</p>
+        <p class="cs-section-label">04 Hyperparameter Tuning</p>
         <h2>GridSearchCV across <em>72 parameter combinations</em></h2>
         <p>
           Both LightGBM and Random Forest were tuned via 3-fold GridSearchCV. The LightGBM grid
           covered n_estimators {500, 1000, 2000}, learning_rate {0.1, 0.05, 0.03},
-          num_leaves {31, 63}, and colsample_bytree/subsample variations — 72 candidates totalling
+          num_leaves {31, 63}, and colsample_bytree/subsample variations - 72 candidates totalling
           216 CV fits per target variable.
         </p>
 
         <div class="two-col">
           <div>
-            <p style="font-family:var(--mono);font-size:0.62rem;letter-spacing:0.18em;color:var(--accent);text-transform:uppercase;margin-bottom:1rem;">XGBoost — final params</p>
+            <p style="font-family:var(--mono);font-size:0.62rem;letter-spacing:0.18em;color:var(--accent);text-transform:uppercase;margin-bottom:1rem;">XGBoost - final params</p>
             <div style="background:var(--cream-dark);border-radius:4px;padding:1.5rem;font-family:var(--mono);font-size:0.78rem;line-height:2;color:var(--charcoal);">
               n_estimators: 300<br/>
               max_depth: 3<br/>
@@ -343,7 +353,7 @@
             </div>
           </div>
           <div>
-            <p style="font-family:var(--mono);font-size:0.62rem;letter-spacing:0.18em;color:var(--accent);text-transform:uppercase;margin-bottom:1rem;">Random Forest — best CV params</p>
+            <p style="font-family:var(--mono);font-size:0.62rem;letter-spacing:0.18em;color:var(--accent);text-transform:uppercase;margin-bottom:1rem;">Random Forest - best CV params</p>
             <div style="background:var(--cream-dark);border-radius:4px;padding:1.5rem;font-family:var(--mono);font-size:0.78rem;line-height:2;color:var(--charcoal);">
               n_estimators: 500<br/>
               max_depth: 15<br/>
@@ -358,7 +368,7 @@
 
       <!-- 05 FEATURE IMPORTANCE -->
       <section class="cs-section">
-        <p class="cs-section-label">05 — Feature Importance (SHAP)</p>
+        <p class="cs-section-label">05 Feature Importance (SHAP)</p>
         <h2>What <em>actually drives</em> student achievement?</h2>
         <p>
           SHAP (SHapley Additive exPlanations) values were computed for the tuned XGBoost model,
@@ -366,7 +376,7 @@
           Features were grouped by original variable to summarise findings clearly.
         </p>
 
-        <p style="font-family:var(--mono);font-size:0.65rem;letter-spacing:0.15em;color:var(--accent);text-transform:uppercase;margin:2rem 0 0.8rem;">Reading score — grouped SHAP importance (mean |SHAP|)</p>
+        <p style="font-family:var(--mono);font-size:0.65rem;letter-spacing:0.15em;color:var(--accent);text-transform:uppercase;margin:2rem 0 0.8rem;">Reading score - grouped SHAP importance (mean |SHAP|)</p>
         <div class="bar-chart" id="shap-read">
           <div class="bar-row"><div class="bar-label">School ID</div>      <div class="bar-track"><div class="bar-fill" data-w="100"></div></div><div class="bar-val">6.67</div></div>
           <div class="bar-row"><div class="bar-label">Lunch (SES)</div>    <div class="bar-track"><div class="bar-fill" data-w="42"></div></div> <div class="bar-val">2.81</div></div>
@@ -378,7 +388,7 @@
           <div class="bar-row"><div class="bar-label">Birth quarter</div>  <div class="bar-track"><div class="bar-fill" data-w="7"></div></div>  <div class="bar-val">0.46</div></div>
         </div>
 
-        <p style="font-family:var(--mono);font-size:0.65rem;letter-spacing:0.15em;color:var(--accent);text-transform:uppercase;margin:2rem 0 0.8rem;">Math score — grouped SHAP importance (mean |SHAP|)</p>
+        <p style="font-family:var(--mono);font-size:0.65rem;letter-spacing:0.15em;color:var(--accent);text-transform:uppercase;margin:2rem 0 0.8rem;">Math score - grouped SHAP importance (mean |SHAP|)</p>
         <div class="bar-chart" id="shap-math">
           <div class="bar-row"><div class="bar-label">School ID</div>      <div class="bar-track"><div class="bar-fill" data-w="100"></div></div><div class="bar-val">11.20</div></div>
           <div class="bar-row"><div class="bar-label">Lunch (SES)</div>    <div class="bar-track"><div class="bar-fill" data-w="38"></div></div> <div class="bar-val">4.23</div></div>
@@ -391,29 +401,29 @@
         </div>
 
         <p style="margin-top:1.5rem;">
-          <strong>School ID dominates both models</strong> — capturing unobserved school-level
+          <strong>School ID dominates both models</strong> - capturing unobserved school-level
           quality variation (principal effectiveness, local culture, funding) that no other
           individual feature can replicate. This is expected given the within-school randomisation
           of Project STAR. <strong>Lunch eligibility (SES proxy) and teacher experience</strong>
-          are the next most influential, both substantially outweighing class type — the variable
+          are the next most influential, both substantially outweighing class type - the variable
           at the centre of the original experiment.
         </p>
       </section>
 
       <!-- 06 KEY FINDINGS -->
       <section class="cs-section">
-        <p class="cs-section-label">06 — Key Findings</p>
+        <p class="cs-section-label">06 Key Findings</p>
         <h2>What this means <em>for education policy</em></h2>
         <div class="three-col">
           <div class="finding-card">
             <div class="finding-num">01</div>
             <p class="finding-title">SES is the dominant driver</p>
-            <p class="finding-desc">Free-lunch eligibility — a proxy for poverty — is the strongest observable predictor after school identity. Students from lower-SES households score ~17 points lower in reading on average.</p>
+            <p class="finding-desc">Free-lunch eligibility - a proxy for poverty - is the strongest observable predictor after school identity. Students from lower-SES households score ~17 points lower in reading on average.</p>
           </div>
           <div class="finding-card">
             <div class="finding-num">02</div>
             <p class="finding-title">Small classes do help</p>
-            <p class="finding-desc">Small class assignment lifts reading by ~5.5 points and math by ~8 points on average — a meaningful effect that SHAP confirms is real, though smaller than the SES gap.</p>
+            <p class="finding-desc">Small class assignment lifts reading by ~5.5 points and math by ~8 points on average - a meaningful effect that SHAP confirms is real, though smaller than the SES gap.</p>
           </div>
           <div class="finding-card">
             <div class="finding-num">03</div>
@@ -423,7 +433,7 @@
           <div class="finding-card">
             <div class="finding-num">04</div>
             <p class="finding-title">Inner-city gap is real</p>
-            <p class="finding-desc">Inner-city school students average 13.8 points below suburban peers in reading — a gap that persists after controlling for individual characteristics.</p>
+            <p class="finding-desc">Inner-city school students average 11.1 points below suburban peers in reading - a gap that persists after controlling for individual characteristics.</p>
           </div>
           <div class="finding-card">
             <div class="finding-num">05</div>
@@ -440,13 +450,13 @@
 
       <!-- 07 LIMITATIONS -->
       <section class="cs-section">
-        <p class="cs-section-label">07 — Limitations &amp; Reflections</p>
+        <p class="cs-section-label">07 Limitations &amp; Reflections</p>
         <h2>What we'd <em>do differently</em></h2>
         <ul class="limit-list">
-          <li data-num="01"><span><strong>Cross-sectional data only.</strong> Models predict a snapshot — they can't capture learning trajectories or the compounding effects of classroom quality over multiple years that Chetty et al. document in the longitudinal data.</span></li>
+          <li data-num="01"><span><strong>Cross-sectional data only.</strong> Models predict a snapshot - they can't capture learning trajectories or the compounding effects of classroom quality over multiple years that Chetty et al. document in the longitudinal data.</span></li>
           <li data-num="02"><span><strong>SES measured by a single binary proxy.</strong> Free-lunch eligibility is a rough measure of socioeconomic status. Household income, parental education, and neighbourhood quality would likely improve model fit and reveal more nuanced effects.</span></li>
           <li data-num="03"><span><strong>School ID as a black box.</strong> While school_id dominates SHAP, it absorbs all unobserved school-level variation without explanation. Ideally, school-level features (per-pupil funding, teacher turnover, class sizes) would replace it.</span></li>
-          <li data-num="04"><span><strong>Random assignment helps — but isn't perfect.</strong> Within-school randomisation removes neighbourhood confounders, but can't account for parent lobbying to change class assignments, or mid-year transfers that dilute the treatment effect.</span></li>
+          <li data-num="04"><span><strong>Random assignment helps - but isn't perfect.</strong> Within-school randomisation removes neighbourhood confounders, but can't account for parent lobbying to change class assignments, or mid-year transfers that dilute the treatment effect.</span></li>
         </ul>
       </section>
 
@@ -456,7 +466,13 @@
     <footer class="cs-footer">
       <p>© 2026 · Huiqi · Kindergarten Achievement Analysis</p>
       <div class="cs-footer-links">
-        <a href="index.html" class="btn-primary" style="padding:0.5rem 1.4rem;">
+        <a href="https://github.com/huiqi16/kindergarten-achievement-analysis"
+           target="_blank" rel="noopener noreferrer"
+           class="btn-outline"
+           style="padding:0.5rem 1.4rem;border-color:rgba(255,255,255,0.15);color:var(--cream);">
+          GitHub ↗
+        </a>
+        <a href="index.html#projects" class="btn-primary" style="padding:0.5rem 1.4rem;">
           ← Back to portfolio
         </a>
       </div>

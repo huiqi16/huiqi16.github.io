@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Customer Feedback Classification — Huiqi's Data Science Case Study" />
-  <title>Customer Feedback Classification — Huiqi</title>
+  <meta name="description" content="Customer Feedback Classification - Huiqi's Data Science Case Study" />
+  <title>Customer Feedback Classification</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
   <style>
-    /* ── Accent overrides — deep teal/slate for this page ── */
+    /* ── Accent overrides - deep teal/slate for this page ── */
     :root {
       --pg-accent:      #3d7a6e;
       --pg-accent-light:#7bbcb0;
@@ -108,9 +108,6 @@
 </head>
 <body>
 
-  <div id="cursor"></div>
-  <div id="cursor-ring"></div>
-
   <div id="sidebar" class="dark">
     <a href="index.html" class="sidebar-logo">Huiqi</a>
     <div class="sidebar-line"></div>
@@ -122,12 +119,18 @@
     <header class="cs-header">
       <div class="cs-header-deco">NLP</div>
       <div class="cs-header-inner">
-        <a href="index.html" class="back-btn">Back to portfolio</a>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:2rem;">
+          <a href="index.html#projects" class="back-btn">Back to portfolio</a>
+          <a href="https://github.com/huiqi16/customer-feedback-classifier" target="_blank" rel="noopener noreferrer"
+            style="font-family:var(--mono); font-size:0.7rem; letter-spacing:0.1em; color:#7aaaa2; text-decoration:none; border-bottom:1px solid rgba(122,170,162,0.4); padding-bottom:2px;">
+            GitHub ↗
+          </a>
+        </div>
         <p class="cs-eyebrow">Case Study · 03</p>
         <h1 class="cs-title">Customer Feedback Classification</h1>
         <p class="cs-subtitle">
           Building a robust multiclass NLP classifier to route 10,000 customer comments
-          across 28 product departments — under severe class imbalance and real-world
+          across 28 product departments - under severe class imbalance and real-world
           distribution shift.
         </p>
         <div class="cs-meta-row">
@@ -143,7 +146,7 @@
 
       <!-- 01 PROBLEM -->
       <section class="cs-section">
-        <p class="cs-section-label">01 — Business Problem</p>
+        <p class="cs-section-label">01 Business Problem</p>
         <h2>Routing customer feedback <em>at scale</em></h2>
         <p>
           A manufacturing company receives thousands of customer comments daily across 28 product lines.
@@ -153,7 +156,7 @@
         </p>
         <p>
           
-          Each comment had been encoded into a 300-dimensional NLP feature vector — but with
+          Each comment had been encoded into a 300-dimensional NLP feature vector - but with
           no feature names or semantic labels attached, making domain interpretation impossible.
           Two additional challenges made this harder than a standard classification task:
           <strong>severe class imbalance</strong> (one class holding 45% of all samples) and
@@ -161,7 +164,7 @@
         </p>
         <div class="highlight-box">
           <p>
-            <strong>Evaluation metric:</strong> Weighted cross-entropy loss — where rare classes
+            <strong>Evaluation metric:</strong> Weighted cross-entropy loss - where rare classes
             receive higher weight via inverse frequency. This explicitly penalises ignoring minority
             classes, making standard accuracy a misleading proxy throughout.
           </p>
@@ -175,7 +178,7 @@
 
       <!-- 02 EDA -->
       <section class="cs-section">
-        <p class="cs-section-label">02 — Exploratory Data Analysis</p>
+        <p class="cs-section-label">02 Exploratory Data Analysis</p>
         <h2>Understanding the data <em>before touching a model</em></h2>
 
         <p>
@@ -183,11 +186,11 @@
           Three distinct analyses shaped the modelling strategy.
         </p>
 
-        <h2 style="margin-top:2.5rem;">Class imbalance — <em>the defining challenge</em></h2>
+        <h2 style="margin-top:2.5rem;">Class imbalance - <em>the defining challenge</em></h2>
         <p>
           The class distribution is dramatically skewed. Class 5 alone accounts for nearly
           half the training data, while several classes have fewer than 10 samples. This makes
-          accuracy a near-useless metric — a model predicting class 5 every time would still
+          accuracy a near-useless metric - a model predicting class 5 every time would still
           achieve ~45% accuracy. Weighted log loss was used instead to force genuine minority
           class performance.
         </p>
@@ -206,28 +209,28 @@
           <div class="class-row"><div class="class-lbl">Class 2</div><div class="class-track"><div class="class-fill rare" data-w="0.2"></div></div><div class="class-val">7</div></div>
         </div>
 
-        <h2 style="margin-top:2.5rem;">Feature quality — <em>mostly clean, but skewed</em></h2>
+        <h2 style="margin-top:2.5rem;">Feature quality - <em>mostly clean, but skewed</em></h2>
         <p>
-          Feature means clustered near zero — confirming pre-standardized NLP embeddings.
+          Feature means clustered near zero - confirming pre-standardized NLP embeddings.
           Standard deviations were uniformly narrow, suggesting many features may be
           low-signal. Outlier detection via Z-score (|z| > 3) flagged fewer than 0.4% of
-          rows across all features — too sparse to warrant removal. The top 20 most skewed
+          rows across all features - too sparse to warrant removal. The top 20 most skewed
           features showed right-skew values between 1.2 and 4.5, consistent with rare NLP
           pattern activations. Tree-based models were chosen partly because they handle
           skewed features without transformation.
         </p>
         <p>
           Pairwise Pearson correlation analysis of all 300 features found no pair exceeding
-          r = 0.69 — well below the 0.95 threshold typically used for redundancy removal.
+          r = 0.69 - well below the 0.95 threshold typically used for redundancy removal.
           All features were retained for feature selection to decide.
         </p>
 
-        <h2 style="margin-top:2.5rem;">Distribution shift — <em>Test Set 2 is different</em></h2>
+        <h2 style="margin-top:2.5rem;">Distribution shift - <em>Test Set 2 is different</em></h2>
         <p>
           Comparing feature-level statistics across the training set, Test Set 1, and Test Set 2
           revealed a clear pattern: feature means, standard deviations, and value ranges
           diverged substantially in Test Set 2 relative to training. This is a textbook
-          <strong>covariate shift</strong> — the input distribution P(x) has changed, while
+          <strong>covariate shift</strong> - the input distribution P(x) has changed, while
           the underlying class-conditional P(y|x) may still hold.
         </p>
         <div class="shift-grid">
@@ -251,13 +254,13 @@
 
       <!-- 03 FEATURE SELECTION -->
       <section class="cs-section">
-        <p class="cs-section-label">03 — Feature Selection</p>
+        <p class="cs-section-label">03 Feature Selection</p>
         <h2>From 300 features to <em>105 that matter</em></h2>
         <p>
           With 300 anonymous features and no semantic guide, feature selection required
-          empirical ranking. Three methods were run in parallel — permutation importance
+          empirical ranking. Three methods were run in parallel - permutation importance
           with Random Forest, permutation importance with Logistic Regression, and XGBoost
-          native feature importance — each producing a top-50 ranking. The union of all three
+          native feature importance - each producing a top-50 ranking. The union of all three
           sets gave 105 features for the final models.
         </p>
 
@@ -279,7 +282,7 @@
 
         <p>
           Permutation importance was chosen as the primary method because it directly measures
-          the change in weighted log loss when each feature is randomly shuffled — aligning
+          the change in weighted log loss when each feature is randomly shuffled - aligning
           the selection criterion with the exact evaluation metric. It is also model-agnostic
           and robust to the skewed distributions and scale differences present in this dataset.
         </p>
@@ -300,7 +303,7 @@
         <div class="highlight-box">
           <p>
             <strong>Key insight:</strong> Weighted log loss dropped dramatically between k=1 and k=50
-            features, then plateaued — confirming that a compact feature set captures most signal.
+            features, then plateaued - confirming that a compact feature set captures most signal.
             Final selection of k=21 (Logistic Regression) and k=25 (Random Forest-ranked) provided
             the best train/test loss balance, with minimal overfitting.
           </p>
@@ -309,7 +312,7 @@
 
       <!-- 04 MODELLING -->
       <section class="cs-section">
-        <p class="cs-section-label">04 — Modelling</p>
+        <p class="cs-section-label">04 Modelling</p>
         <h2>Nine models. <em>One stacked winner.</em></h2>
         <p>
           A wide model search was conducted across the selected feature sets. All models used
@@ -323,7 +326,7 @@
           </thead>
           <tbody>
             <tr><td class="model-name">LightGBM (early stopping)</td><td>≈0.000</td><td>0.0194</td><td style="font-size:0.8rem;color:var(--warm-gray);">Severe overfit</td></tr>
-            <tr><td class="model-name">Random Forest (top 150)</td><td>0.0013</td><td>0.0153</td><td style="font-size:0.8rem;color:var(--warm-gray);">Overfit — large train/test gap</td></tr>
+            <tr><td class="model-name">Random Forest (top 150)</td><td>0.0013</td><td>0.0153</td><td style="font-size:0.8rem;color:var(--warm-gray);">Overfit - large train/test gap</td></tr>
             <tr><td class="model-name">XGBoost (union features)</td><td>0.0002</td><td>0.0078</td><td style="font-size:0.8rem;color:var(--warm-gray);">Strong but overfit</td></tr>
             <tr><td class="model-name">Calibrated SVM</td><td>0.0046</td><td>0.0071</td><td style="font-size:0.8rem;color:var(--warm-gray);">Good generalization</td></tr>
             <tr><td class="model-name">Voting Classifier (LR+RF+XGB)</td><td>0.0007</td><td>0.0059</td><td style="font-size:0.8rem;color:var(--warm-gray);">Ensemble benefit</td></tr>
@@ -365,7 +368,7 @@
         <p>
           The stacking architecture trains a meta-learner (Logistic Regression) on the
           concatenated probability outputs of three base models. The meta-learner learns
-          how much to trust each base model per class — effectively combining their
+          how much to trust each base model per class - effectively combining their
           complementary strengths. This reduced the test weighted log loss to 0.0043, the
           best achieved across all experiments, with a minimal train/test gap indicating
           strong generalization.
@@ -374,28 +377,28 @@
 
       <!-- 05 IMBALANCE -->
       <section class="cs-section">
-        <p class="cs-section-label">05 — Handling Class Imbalance</p>
+        <p class="cs-section-label">05 Handling Class Imbalance</p>
         <h2>Why accuracy <em>is the wrong metric</em></h2>
         <p>
           The dataset's dominant Class 5 (4,479 of 10,000 samples) creates a deceptive
-          accuracy landscape — a naive majority-class predictor achieves ~45% accuracy.
+          accuracy landscape - a naive majority-class predictor achieves ~45% accuracy.
           Three strategies were applied to address this throughout the pipeline.
         </p>
         <div class="findings-2col">
           <div class="finding-card">
             <div class="finding-num">01</div>
             <p class="finding-title">Weighted loss metric</p>
-            <p class="finding-desc">The evaluation metric itself applies inverse-frequency class weights — rare classes receive proportionally higher penalty when misclassified. This forced all model choices to account for minority class performance, not just dominant class accuracy.</p>
+            <p class="finding-desc">The evaluation metric itself applies inverse-frequency class weights - rare classes receive proportionally higher penalty when misclassified. This forced all model choices to account for minority class performance, not just dominant class accuracy.</p>
           </div>
           <div class="finding-card">
             <div class="finding-num">02</div>
             <p class="finding-title">class_weight='balanced'</p>
-            <p class="finding-desc">Applied uniformly to all sklearn models. This adjusts sample weights during training so each class contributes equally to the loss update — preventing the model from collapsing to always predict Class 5.</p>
+            <p class="finding-desc">Applied uniformly to all sklearn models. This adjusts sample weights during training so each class contributes equally to the loss update - preventing the model from collapsing to always predict Class 5.</p>
           </div>
           <div class="finding-card">
             <div class="finding-num">03</div>
             <p class="finding-title">Stratified splitting</p>
-            <p class="finding-desc">All train/test splits used stratified sampling. With classes as rare as 7 samples, non-stratified splits risked excluding entire classes from training or evaluation sets — making stratification critical rather than optional.</p>
+            <p class="finding-desc">All train/test splits used stratified sampling. With classes as rare as 7 samples, non-stratified splits risked excluding entire classes from training or evaluation sets - making stratification critical rather than optional.</p>
           </div>
           <div class="finding-card">
             <div class="finding-num">04</div>
@@ -407,12 +410,12 @@
 
       <!-- 06 DISTRIBUTION SHIFT -->
       <section class="cs-section">
-        <p class="cs-section-label">06 — Distribution Shift (Test Set 2)</p>
+        <p class="cs-section-label">06 Distribution Shift (Test Set 2)</p>
         <h2>Deploying to a <em>different distribution</em></h2>
         <p>
           Test Set 2 presented a simulated real-world deployment scenario: 202 labeled points
           and 1,818 unlabeled points, with feature statistics that diverged measurably from
-          training. This is covariate shift — the feature distribution P(x) changes, but
+          training. This is covariate shift - the feature distribution P(x) changes, but
           the class-conditional relationship P(y|x) may still hold.
         </p>
         <div class="dist-compare">
@@ -428,7 +431,7 @@
         <div class="highlight-box">
           <p>
             <strong>Key finding:</strong> The stacked model's generalization advantage was
-            amplified under distribution shift — the meta-learner's smoothing effect reduced
+            amplified under distribution shift - the meta-learner's smoothing effect reduced
             sensitivity to individual base model failure modes specific to the training
             distribution.
           </p>
@@ -437,7 +440,7 @@
 
       <!-- 07 RESULTS -->
       <section class="cs-section">
-        <p class="cs-section-label">07 — Results</p>
+        <p class="cs-section-label">07 Results</p>
         <h2>What the stacked model <em>achieved</em></h2>
         <div class="stats-row">
           <div class="stat-card"><div class="stat-num"><em>0.0037</em></div><div class="stat-label">WLL (Training)</div></div>
@@ -448,18 +451,18 @@
           The LightGBM validation accuracy of 76.95% and weighted F1 of 0.75 show the model
           performed well on majority classes. The stacked architecture's true advantage
           appeared in the train-test WLL gap: a difference of just 0.0006 compared to
-          Random Forest's gap of 0.014 — a 20× improvement in generalization consistency.
+          Random Forest's gap of 0.014 - a 20× improvement in generalization consistency.
         </p>
         <p>
           Per-class inspection revealed persistent failures on ultra-rare classes (0, 1, 2, 22)
-          with fewer than 10 samples — a structural limitation no model selection strategy
+          with fewer than 10 samples - a structural limitation no model selection strategy
           can fully overcome without additional data.
         </p>
       </section>
 
       <!-- 08 LIMITATIONS -->
       <section class="cs-section">
-        <p class="cs-section-label">08 — Limitations &amp; Reflections</p>
+        <p class="cs-section-label">08 - Limitations &amp; Reflections</p>
         <h2>What we'd <em>do differently</em></h2>
         <ul class="limit-list">
           <li data-num="01"><span><strong>Anonymous features limit interpretability.</strong> With 300 unlabelled NLP dimensions, it was impossible to construct domain-informed features or understand why specific features ranked highly. Raw NLP embeddings carry semantic structure that permutation importance can rank but not explain.</span></li>
@@ -475,7 +478,13 @@
     <footer class="cs-footer">
       <p>© 2026 · Huiqi · Customer Feedback Classification</p>
       <div class="cs-footer-links">
-        <a href="index.html" class="btn-primary" style="padding:0.5rem 1.4rem;">
+        <a href="https://github.com/huiqi16/customer-feedback-classifier"
+           target="_blank" rel="noopener noreferrer"
+           class="btn-outline"
+           style="padding:0.5rem 1.4rem;border-color:rgba(255,255,255,0.15);color:var(--cream);">
+          GitHub ↗
+        </a>
+        <a href="index.html#projects" class="btn-primary" style="padding:0.5rem 1.4rem;">
           ← Back to portfolio
         </a>
       </div>

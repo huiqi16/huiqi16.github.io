@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="F1 Chicane Performance Optimization — Huiqi's Data Science Case Study" />
-  <title>F1 Chicane Optimization — Huiqi</title>
+  <meta name="description" content="F1 Chicane Performance Optimization - Huiqi's Data Science Case Study" />
+  <title>F1 Telemetry Performance Optimisation</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet" />
@@ -12,14 +12,10 @@
 </head>
 <body>
 
-  <!-- Custom cursor -->
-  <div id="cursor"></div>
-  <div id="cursor-ring"></div>
-
   <!-- ── Sidebar (dark variant for this page) ── -->
   <div id="sidebar" class="dark">
     <a href="index.html" class="sidebar-logo">Huiqi</a>
-    <!-- No section dots on this page — it scrolls as a document -->
+    <!-- No section dots on this page - it scrolls as a document -->
     <div class="sidebar-line"></div>
   </div>
 
@@ -30,9 +26,15 @@
     <header class="cs-header">
       <div class="cs-header-deco">F1</div>
       <div class="cs-header-inner">
-        <a href="index.html" class="back-btn">Back to portfolio</a>
-        <p class="cs-eyebrow">Case Study · 01 — Featured</p>
-        <h1 class="cs-title">F1 Chicane Performance Optimization</h1>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:2rem;">
+          <a href="index.html#projects" class="back-btn">Back to portfolio</a>
+          <a href="https://github.com/huiqi16/F1-Telemetry-Performance-Optimisation" target="_blank" rel="noopener noreferrer"
+            style="font-family:var(--mono); font-size:0.7rem; letter-spacing:0.1em; color:var(--rose-light); text-decoration:none; border-bottom:1px solid rgba(232,180,184,0.4); padding-bottom:2px;">
+            GitHub ↗
+          </a>
+        </div>
+        <p class="cs-eyebrow">Case Study · 01 - Featured</p>
+        <h1 class="cs-title">F1 Telemetry Performance Optimisation</h1>
         <p class="cs-subtitle">
           Using machine learning on racing simulator telemetry to identify the optimal driver
           inputs that minimize time through a technically demanding chicane.
@@ -41,7 +43,7 @@
           <div><p class="cs-meta-label">Context</p>    <p class="cs-meta-value">Academic · Group Project</p></div>
           <div><p class="cs-meta-label">Role</p>       <p class="cs-meta-value">Data Engineering · Modelling · Analysis</p></div>
           <div><p class="cs-meta-label">Stack</p>      <p class="cs-meta-value">Python · Scikit-learn · SciPy · XGBoost</p></div>
-          <div><p class="cs-meta-label">Track</p>      <p class="cs-meta-value">Albert Park — Turns 1 &amp; 2</p></div>
+          <div><p class="cs-meta-label">Track</p>      <p class="cs-meta-value">Albert Park - Turns 1 &amp; 2</p></div>
         </div>
       </div>
     </header>
@@ -51,7 +53,7 @@
 
       <!-- 01 Business Problem -->
       <section class="cs-section">
-        <p class="cs-section-label">01 — Business Problem</p>
+        <p class="cs-section-label">01 Business Problem</p>
         <h2>What separates <em>tenths of a second</em> in elite motorsport?</h2>
         <p>
           In Formula 1, the margin between a podium and a midfield finish can come down to driver
@@ -60,14 +62,14 @@
           Park was enough to influence the race outcome.
         </p>
         <p>
-          Despite this, sim racing teams — who generate enormous volumes of telemetry data — lack
+          Despite this, sim racing teams - who generate enormous volumes of telemetry data - lack
           rigorous, data-driven frameworks for coaching drivers on corner technique.
           <strong>Can machine learning on simulator data prescribe optimal driver inputs?</strong>
         </p>
         <div class="highlight-box">
           <p>
-            <strong>Objective:</strong> Determine the optimal combination of driver trigger points —
-            braking, steering, and throttle — through the Turns 1–2 chicane to maximize exit speed
+            <strong>Objective:</strong> Determine the optimal combination of driver trigger points -
+            braking, steering, and throttle - through the Turns 1–2 chicane to maximize exit speed
             and minimize chicane time.
           </p>
         </div>
@@ -80,34 +82,34 @@
 
       <!-- 02 Data & Cleaning -->
       <section class="cs-section">
-        <p class="cs-section-label">02 — Data &amp; Cleaning</p>
+        <p class="cs-section-label">02 Data &amp; Cleaning</p>
         <h2>From raw telemetry frames <em>to one row per lap</em></h2>
         <p>
-          The raw simulator output is frame-level telemetry — one record every few milliseconds,
+          The raw simulator output is frame-level telemetry - one record every few milliseconds,
           capturing position, speed, inputs, and vehicle state continuously around the lap.
           Before any modelling could occur, this had to be transformed into a structured,
           lap-level dataset through a four-stage pipeline.
         </p>
 
         <p>
-          <strong>Stage 1 — Filtering.</strong> Only Melbourne laps with valid racing
+          <strong>Stage 1 - Filtering.</strong> Only Melbourne laps with valid racing
           status were retained. Laps with fewer than 500 distinct position points were
           dropped as glitched or stuttery. Rows with missing X/Y coordinates were removed,
           leaving a clean set of complete, driveable laps.
         </p>
 
         <p>
-          <strong>Stage 2 — Spatial enforcement.</strong> Track boundary CSVs (left and
+          <strong>Stage 2 - Spatial enforcement.</strong> Track boundary CSVs (left and
           right limits) were loaded and used to construct a Shapely polygon of the T1–T2
           sector. Any lap containing even a single telemetry point more than 5 metres outside
-          this polygon was removed entirely — catching off-track excursions that would
+          this polygon was removed entirely - catching off-track excursions that would
           otherwise corrupt corner technique analysis.
         </p>
 
         <p>
-          <strong>Stage 3 — Feature engineering.</strong> Velocity (X/Y/Z) and G-forces were
+          <strong>Stage 3 - Feature engineering.</strong> Velocity (X/Y/Z) and G-forces were
           recomputed from position deltas since raw simulator values contained unrealistic
-          outliers — values beyond ±7G were masked and interpolated per lap. Three angular
+          outliers - values beyond ±7G were masked and interpolated per lap. Three angular
           features were engineered to capture driver technique: front wheel vs velocity angle
           (understeer/slip), car direction vs velocity angle (oversteer/drift), and front wheel
           vs car direction angle (steering aggression). Racing line deviation was computed
@@ -116,7 +118,7 @@
         </p>
 
         <p>
-          <strong>Stage 4 — Lap aggregation &amp; trigger point extraction.</strong>
+          <strong>Stage 4 - Lap aggregation &amp; trigger point extraction.</strong>
           Frame-level data was collapsed to one row per lap by identifying seven key
           trigger moments and snapshotting eight variables at each: speed, throttle, brake,
           steering angle, lap time, lap distance, and world X/Y position. This produced the
@@ -127,19 +129,19 @@
           <div>
             <p>
               <strong>Modelling-side cleaning</strong> reduced the 255 features to 57
-              by retaining only driver-controlled inputs — explicitly excluding vehicle
+              by retaining only driver-controlled inputs - explicitly excluding vehicle
               dynamics outputs like yaw, pitch, roll, apex distances, and racing line
               deviation, which reflect car response rather than driver intent.
             </p>
             <p>
               <strong>A critical labelling error</strong> was uncovered during EDA. The Throttle
-              End (THE) and Throttle Start (THS) variables had been swapped in the source dataset —
+              End (THE) and Throttle Start (THS) variables had been swapped in the source dataset -
               confirmed across six independent variables. Domain-informed validation like this is
               what prevents models from learning entirely the wrong signal.
             </p>
             <p>
               <strong>Outlier removal used a combinatorial search.</strong> All 128 combinations
-              of which trigger-point prefixes to IQR-filter were evaluated exhaustively —
+              of which trigger-point prefixes to IQR-filter were evaluated exhaustively -
               selecting the subset that minimised MSE per model. SVR benefited from filtering
               BPS, STM, STE, and THS; KNN from STM, STE, and THS. Rows with remaining null
               values were dropped rather than imputed, to avoid conflating poor laps with strong ones.
@@ -166,10 +168,10 @@
 
       <!-- 03 Modelling -->
       <section class="cs-section">
-        <p class="cs-section-label">03 — Modelling</p>
+        <p class="cs-section-label">03 Modelling</p>
         <h2>Seven models. <em>One clear winner.</em></h2>
         <p>
-          Lap time prediction is inherently non-linear — small changes in braking point cascade
+          Lap time prediction is inherently non-linear - small changes in braking point cascade
           into corner entry speed, steering angle, and throttle timing. We evaluated a full
           progression from interpretable baselines to complex ensemble methods.
         </p>
@@ -193,7 +195,7 @@
           </tbody>
         </table>
         <p>
-          SVR with a linear kernel (C=1000, ε=100) outperformed all models by a clear margin —
+          SVR with a linear kernel (C=1000, ε=100) outperformed all models by a clear margin -
           and the linear kernel result was itself notable. It suggests the relationship between
           correctly-engineered trigger-point features and lap time is approximately linear, once
           noisy and mislabelled features are resolved.
@@ -210,11 +212,11 @@
 
       <!-- 04 Feature Importance -->
       <section class="cs-section">
-        <p class="cs-section-label">04 — Feature Importance</p>
+        <p class="cs-section-label">04 Feature Importance</p>
         <h2>What actually <em>drives</em> chicane time?</h2>
         <p>
           SVR coefficient magnitudes reveal which moments are most predictive of final lap time.
-          The results are consistent with motorsport intuition — exit phase behaviour dominates,
+          The results are consistent with motorsport intuition - exit phase behaviour dominates,
           not peak braking performance.
         </p>
         <div class="bar-chart" id="bar-chart">
@@ -228,8 +230,8 @@
           <div class="bar-row"><div class="bar-label">BPE_SPEED</div>         <div class="bar-track"><div class="bar-fill" data-w="22"></div></div> <div class="bar-val">22%</div></div>
         </div>
         <p>
-          The <strong>Steer End (STE)</strong> moment — steering wheel returning to neutral after
-          Turn 2 — is the single strongest predictor. This captures how well the driver has set up
+          The <strong>Steer End (STE)</strong> moment - steering wheel returning to neutral after
+          Turn 2 - is the single strongest predictor. This captures how well the driver has set up
           for the acceleration zone into Turn 3. Braking features matter less in isolation; it's
           the downstream consequences of those decisions that determine lap time.
         </p>
@@ -237,11 +239,11 @@
 
       <!-- 05 Optimization -->
       <section class="cs-section">
-        <p class="cs-section-label">05 — Optimization</p>
+        <p class="cs-section-label">05 Optimization</p>
         <h2>Finding the <em>optimal lap</em></h2>
         <p>
           With SVR validated, SciPy's <code style="font-family:var(--mono);font-size:0.88em;background:var(--cream-dark);padding:0.1rem 0.4rem;border-radius:2px;">differential_evolution</code>
-          was used to find the global minimum — the combination of driver inputs that minimizes
+          was used to find the global minimum - the combination of driver inputs that minimizes
           predicted chicane time. Early attempts produced impossible lap times (0.2 seconds).
           The final approach bounded each feature to its 25th–75th percentile range, and a KNN
           plausibility check confirmed the result closely matched real laps in the dataset.
@@ -251,7 +253,7 @@
         <div class="track-viz">
           <p class="track-viz-label">Optimal trigger point positions vs. closest real lap (Albert Park T1–T2)</p>
           <div class="track-svg-wrap">
-            <img src="track-viz.png" alt="Optimal lap trigger point positions on Albert Park T1–T2" style="width:100%;max-width:560px;border-radius:4px;display:block;"/>
+            <img src="src/track-viz.png" alt="Optimal lap trigger point positions on Albert Park T1–T2" style="width:100%;max-width:560px;border-radius:4px;display:block;"/>
           </div>
         </div>
 
@@ -271,7 +273,7 @@
         <div class="highlight-box">
           <p>
             Target chicane time: <strong>11,266.63 ms (~11.27 seconds)</strong>. Verified
-            against real laps using KNN — feature differences were minor across all variables,
+            against real laps using KNN - feature differences were minor across all variables,
             confirming the recommendation is physically achievable.
           </p>
         </div>
@@ -279,7 +281,7 @@
 
       <!-- 06 Key Findings -->
       <section class="cs-section">
-        <p class="cs-section-label">06 — Key Findings</p>
+        <p class="cs-section-label">06 Key Findings</p>
         <h2>What this means <em>for driver coaching</em></h2>
         <div class="findings-grid">
           <div class="finding-card">
@@ -295,20 +297,20 @@
           <div class="finding-card">
             <div class="finding-num">03</div>
             <p class="finding-title">Tight braking zone</p>
-            <p class="finding-desc">Optimal braking sits within a 2m window at 249–275m lap distance — a concrete, actionable coaching reference.</p>
+            <p class="finding-desc">Optimal braking sits within a 2m window at 249–275m lap distance - a concrete, actionable coaching reference.</p>
           </div>
         </div>
       </section>
 
       <!-- 07 Limitations -->
       <section class="cs-section">
-        <p class="cs-section-label">07 — Limitations &amp; Reflections</p>
+        <p class="cs-section-label">07 Limitations &amp; Reflections</p>
         <h2>What we'd <em>do differently</em></h2>
         <ul class="limit-list">
-          <li data-num="01"><span><strong>Aggregated features only.</strong> Models learned from trigger-point summaries, not continuous telemetry. A driver can reach optimal trigger points via a suboptimal path — continuous data would enable richer modelling.</span></li>
+          <li data-num="01"><span><strong>Aggregated features only.</strong> Models learned from trigger-point summaries, not continuous telemetry. A driver can reach optimal trigger points via a suboptimal path - continuous data would enable richer modelling.</span></li>
           <li data-num="02"><span><strong>No session context.</strong> Tyre wear, fuel load, and track temperature all influence real-world performance. The model captures behavioural technique only.</span></li>
           <li data-num="03"><span><strong>Optimization bound sensitivity.</strong> Differential evolution bounds were found by trial and error. A physics-informed or constraint-based approach would improve reproducibility.</span></li>
-          <li data-num="04"><span><strong>Feature engineering dependency.</strong> All features were pre-engineered by a separate team. Reliability of insights depends on upstream engineering quality — a reminder that data pipelines are foundational.</span></li>
+          <li data-num="04"><span><strong>Feature engineering dependency.</strong> All features were pre-engineered by a separate team. Reliability of insights depends on upstream engineering quality - a reminder that data pipelines are foundational.</span></li>
         </ul>
       </section>
 
@@ -316,15 +318,15 @@
 
     <!-- FOOTER -->
     <footer class="cs-footer">
-      <p>© 2026 · Huiqi · F1 Chicane Optimization</p>
+      <p>© 2026 · Huiqi · F1 Telemetry Performance Optimisation</p>
       <div class="cs-footer-links">
-        <a href="https://github.com/saaamsaaa/F1-Modelling-Group"
+        <a href="https://github.com/huiqi16/F1-Telemetry-Performance-Optimisation"
            target="_blank" rel="noopener noreferrer"
            class="btn-outline"
            style="padding:0.5rem 1.4rem;border-color:rgba(255,255,255,0.15);color:var(--cream);">
           GitHub ↗
         </a>
-        <a href="index.html" class="btn-primary" style="padding:0.5rem 1.4rem;">
+        <a href="index.html#projects" class="btn-primary" style="padding:0.5rem 1.4rem;">
           ← Back to portfolio
         </a>
       </div>
